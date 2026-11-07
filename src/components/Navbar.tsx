@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Sparkles,
   Volume2,
@@ -8,10 +8,14 @@ import {
   Search,
   Bell,
   Compass,
+  Globe,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
 import { ArchipelagoStats, SubjectCity } from '../types/game';
 import { PlatformTab } from './Sidebar';
+import { i18n, SUPPORTED_LANGUAGES, StudyLanguage } from '../utils/i18n';
 
 interface NavbarProps {
   currentTab: PlatformTab;
@@ -38,6 +42,39 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchQuery,
   setSearchQuery,
 }) => {
+  const [currentLang, setCurrentLang] = useState<StudyLanguage>(() => i18n.getLanguage());
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const langMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const unsubscribe = i18n.subscribe((lang) => {
+      setCurrentLang(lang);
+    });
+    return unsubscribe;
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
+        setIsLangMenuOpen(false);
+      }
+    };
+    if (isLangMenuOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isLangMenuOpen]);
+
+  const activeLangInfo = SUPPORTED_LANGUAGES.find((l) => l.code === currentLang) || SUPPORTED_LANGUAGES[0];
+
+  const handleSelectLanguage = (langCode: StudyLanguage) => {
+    soundEngine.playClick();
+    i18n.setLanguage(langCode);
+    setIsLangMenuOpen(false);
+  };
   const handleToggleSound = () => {
     if (!isMuted) {
       soundEngine.playClick();
@@ -153,6 +190,59 @@ export const Navbar: React.FC<NavbarProps> = ({
               </>
             )}
           </button>
+
+          {/* Study Language Switcher (Néerlandais 🇳🇱, Français 🇫🇷, Anglais 🇬🇧, Espagnol 🇪🇸) */}
+          <div className="relative" ref={langMenuRef}>
+            <button
+              onClick={() => {
+                soundEngine.playClick();
+                setIsLangMenuOpen((prev) => !prev);
+              }}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#0c0f24] hover:bg-[#121838] border border-slate-700/80 hover:border-[#0A26E6] text-xs font-mono transition-all text-slate-200 active:scale-95"
+              title="Changer la langue d'apprentissage (Néerlandais, Français, Anglais, Espagnol)"
+              aria-label="Sélectionner la langue d'étude"
+              aria-expanded={isLangMenuOpen}
+            >
+              <span className="text-sm">{activeLangInfo.flag}</span>
+              <span className="font-bold text-cyan-300">{activeLangInfo.code.toUpperCase()}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isLangMenuOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isLangMenuOpen && (
+              <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-[#0B0E23] border border-slate-700 shadow-2xl p-2 z-50 space-y-1 backdrop-blur-xl animate-fadeIn">
+                <div className="px-2.5 py-1.5 border-b border-slate-800 text-[10px] uppercase font-mono tracking-wider text-cyan-400 flex items-center justify-between">
+                  <span>Langues d’Apprentissage</span>
+                  <span className="text-slate-500 font-mono">4 langues</span>
+                </div>
+
+                {SUPPORTED_LANGUAGES.map((lang) => {
+                  const isSelected = lang.code === currentLang;
+                  return (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleSelectLanguage(lang.code)}
+                      className={`w-full flex items-center justify-between p-2 rounded-xl text-xs transition-all text-left ${
+                        isSelected
+                          ? 'bg-[#0A26E6] text-white font-semibold shadow-md'
+                          : 'hover:bg-[#070919] text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-base shrink-0">{lang.flag}</span>
+                        <div className="min-w-0">
+                          <div className="leading-tight font-medium truncate">{lang.name}</div>
+                          <div className={`text-[10px] truncate ${isSelected ? 'text-blue-200' : 'text-slate-400'}`}>
+                            {lang.description}
+                          </div>
+                        </div>
+                      </div>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0 ml-1" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           {/* Notification Bell */}
           <button

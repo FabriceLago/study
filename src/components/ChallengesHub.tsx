@@ -123,6 +123,21 @@ export const ChallengesHub: React.FC<ChallengesHubProps> = ({
                         {cityInfo.name}
                       </span>
                     )}
+                    {chal.language === 'nl' && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                        🇳🇱 Néerlandais
+                      </span>
+                    )}
+                    {chal.language === 'en' && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/30 text-blue-300">
+                        🇬🇧 Anglais
+                      </span>
+                    )}
+                    {chal.language === 'es' && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-red-500/10 border border-red-500/30 text-red-300">
+                        🇪🇸 Espagnol
+                      </span>
+                    )}
                   </div>
 
                   {isCompleted ? (

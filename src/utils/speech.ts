@@ -1,9 +1,10 @@
 import { soundEngine } from './audio';
+import { i18n } from './i18n';
 
 class SpeechHelper {
   private currentUtterance: SpeechSynthesisUtterance | null = null;
 
-  public speak(text: string, rate: number = 0.95) {
+  public speak(text: string, customLang?: string, rate: number = 0.95) {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       return;
     }
@@ -17,18 +18,27 @@ class SpeechHelper {
       window.speechSynthesis.cancel();
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'fr-FR';
-      utterance.rate = rate; // Gentle pace suitable for 10-year-olds
+      
+      // Determine voice language: custom override, or current study language from i18n
+      const targetLang = customLang || i18n.getLanguageInfo().voiceLang || 'fr-FR';
+      utterance.lang = targetLang;
+      utterance.rate = rate; // Gentle pace suitable for young learners
       utterance.pitch = 1.05; // Friendly warm tone
 
-      // Try to find a natural French voice if available
       const voices = window.speechSynthesis.getVoices();
-      const frenchVoice =
-        voices.find((v) => v.lang.startsWith('fr') && (v.name.includes('Amélie') || v.name.includes('Thomas') || v.name.includes('French') || v.name.includes('Google'))) ||
-        voices.find((v) => v.lang.startsWith('fr'));
+      const prefix = targetLang.split('-')[0].toLowerCase();
 
-      if (frenchVoice) {
-        utterance.voice = frenchVoice;
+      // Find appropriate voice based on target language (Dutch, French, English, Spanish)
+      let matchedVoice = voices.find(
+        (v) => v.lang.toLowerCase().startsWith(prefix) && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Enhanced'))
+      );
+
+      if (!matchedVoice) {
+        matchedVoice = voices.find((v) => v.lang.toLowerCase().startsWith(prefix));
+      }
+
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
       }
 
       this.currentUtterance = utterance;

@@ -52,7 +52,17 @@ export default function App() {
   const [buildings, setBuildings] = useState<Building[]>(() => {
     try {
       const saved = localStorage.getItem('studyquest_v3_buildings');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: Building[] = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((b) => b.id));
+        const merged = [...parsed];
+        for (const b of INITIAL_BUILDINGS) {
+          if (!existingIds.has(b.id)) {
+            merged.push(b);
+          }
+        }
+        return merged;
+      }
     } catch {}
     return INITIAL_BUILDINGS;
   });
@@ -60,7 +70,17 @@ export default function App() {
   const [challenges, setChallenges] = useState<ConstructionChallenge[]>(() => {
     try {
       const saved = localStorage.getItem('studyquest_v3_challenges');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: ConstructionChallenge[] = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((c) => c.id));
+        const merged = [...parsed];
+        for (const c of INITIAL_CHALLENGES) {
+          if (!existingIds.has(c.id)) {
+            merged.push(c);
+          }
+        }
+        return merged;
+      }
     } catch {}
     return INITIAL_CHALLENGES;
   });
@@ -68,7 +88,17 @@ export default function App() {
   const [flashcards, setFlashcards] = useState<Flashcard[]>(() => {
     try {
       const saved = localStorage.getItem('studyquest_v3_flashcards');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: Flashcard[] = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((fc) => fc.id));
+        const merged = [...parsed];
+        for (const fc of INITIAL_FLASHCARDS) {
+          if (!existingIds.has(fc.id)) {
+            merged.push(fc);
+          }
+        }
+        return merged;
+      }
     } catch {}
     return INITIAL_FLASHCARDS;
   });

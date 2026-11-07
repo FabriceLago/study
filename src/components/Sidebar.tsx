@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
 
+import { i18n, StudyLanguage } from '../utils/i18n';
+
 export type PlatformTab =
   | 'plan'
   | 'city'
@@ -34,52 +36,61 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setCurrentTab,
   onOpenAiForge,
 }) => {
+  const [lang, setLang] = React.useState<StudyLanguage>(() => i18n.getLanguage());
+
+  React.useEffect(() => {
+    const unsub = i18n.subscribe((l) => setLang(l));
+    return unsub;
+  }, []);
+
+  const t = i18n.t();
+
   const mainNavItems = [
     {
       id: 'plan' as const,
-      label: 'Plan de la Plateforme',
+      label: t.tabPlan,
       shortLabel: 'Plan',
       icon: <Compass className="w-5 h-5" />,
-      description: 'Expédition & Tableau de bord',
+      description: 'Expédition & Sommet',
     },
     {
       id: 'city' as const,
-      label: 'Cités Scolaires',
+      label: t.tabCity,
       shortLabel: 'Cités',
       icon: <Building2 className="w-5 h-5" />,
       description: 'Archipel des 6 matières',
     },
     {
       id: 'challenges' as const,
-      label: 'Chantiers d’Étude',
+      label: t.tabChallenges,
       shortLabel: 'Chantiers',
       icon: <BookOpen className="w-5 h-5" />,
-      description: 'Épreuves & Questions de cours',
+      description: 'Épreuves & Questions',
     },
     {
       id: 'wonder' as const,
-      label: 'Palais des Savoirs',
+      label: t.tabWonder,
       shortLabel: 'Merveille',
       icon: <Crown className="w-5 h-5" />,
       description: 'Sommet & Défi Transversal',
     },
     {
       id: 'schedule' as const,
-      label: 'Planning de Révisions',
+      label: t.tabSchedule,
       shortLabel: 'Planning',
       icon: <Calendar className="w-5 h-5" />,
       description: 'Calendrier des devoirs',
     },
     {
       id: 'focus' as const,
-      label: 'Studio Focus & Thé',
+      label: t.tabFocus,
       shortLabel: 'Focus',
       icon: <Coffee className="w-5 h-5" />,
       description: 'Atelier de concentration cosy',
     },
     {
       id: 'shop' as const,
-      label: 'Fleuriste & Ornements',
+      label: t.tabShop,
       shortLabel: 'Boutique',
       icon: <ShoppingBag className="w-5 h-5" />,
       description: 'Décorations & Végétation',

@@ -8,9 +8,11 @@ import {
   ArrowRight,
   Flame,
   Award,
+  Volume2,
 } from 'lucide-react';
-import { Flashcard, SubjectCity, SubjectCityId } from '../types/game';
+import { Flashcard, SubjectCity, SubjectCityId, StudyLanguage } from '../types/game';
 import { soundEngine } from '../utils/audio';
+import { speechHelper } from '../utils/speech';
 
 interface CourseScheduleViewProps {
   flashcards: Flashcard[];
@@ -49,15 +51,26 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
   const [selectedDay, setSelectedDay] = useState<string>(scheduleDays[0]?.id || 'day_0');
   const [activeFlashcard, setActiveFlashcard] = useState<Flashcard | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [selectedLangFilter, setSelectedLangFilter] = useState<StudyLanguage | 'all'>('all');
 
   const plannedTasks = [
     {
+      id: 'task_nl',
+      challengeId: 'chal_la_nl',
+      subject: 'Néerlandais (Nederlands) 🇳🇱',
+      cityId: 'langues' as SubjectCityId,
+      time: '08:30 - 09:00',
+      title: 'Vocabulaire fondamental : Salutations (Goedemorgen) & Politesse (Alsjeblieft)',
+      buildingGoal: 'Het Nederlands Paviljoen (Pavillon Néerlandais)',
+      difficulty: 'Facile',
+    },
+    {
       id: 'task_1',
       challengeId: 'chal_fr_1',
-      subject: 'Français & Grammaire',
+      subject: 'Français & Grammaire 🇫🇷',
       cityId: 'francais' as SubjectCityId,
-      time: '09:00 - 09:30',
-      title: 'Révision des accords du participe passé',
+      time: '09:15 - 09:45',
+      title: 'Révision des accords du participe passé et poésie',
       buildingGoal: 'Bibliothèque des Grands Textes',
       difficulty: 'Facile',
     },
@@ -83,15 +96,20 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
     },
     {
       id: 'task_4',
-      challengeId: 'chal_hi_1',
-      subject: 'Histoire & Géographie',
-      cityId: 'histoire' as SubjectCityId,
+      challengeId: 'chal_la_1',
+      subject: 'Anglais (English) 🇬🇧',
+      cityId: 'langues' as SubjectCityId,
       time: '16:00 - 16:30',
-      title: 'Repères de la Révolution française (1789)',
-      buildingGoal: 'Musée des Grandes Civilisations',
+      title: 'Daily expressions & Idioms (A piece of cake)',
+      buildingGoal: 'Salon Linguistique International',
       difficulty: 'Facile',
     },
   ];
+
+  const filteredFlashcards =
+    selectedLangFilter === 'all'
+      ? flashcards
+      : flashcards.filter((fc) => fc.language === selectedLangFilter);
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -209,55 +227,171 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Flashcards Review Guide */}
+        {/* Right Column: Flashcards Review Guide with Multilingual Support */}
         <div className="space-y-4">
-          <h3 className="text-base font-bold font-editorial text-white flex items-center justify-between">
-            <span>Fiches Clés & Flashcards</span>
-            <span className="text-xs text-rose-400 font-mono">
-              {flashcards.length} fiches
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-cyan-400" />
+              <span>Fiches & Woordenlijsten</span>
+            </h3>
+            <span className="text-xs text-cyan-400 font-mono bg-[#070919] px-2 py-0.5 rounded border border-slate-800">
+              {filteredFlashcards.length} fiches
             </span>
-          </h3>
+          </div>
 
-          <div className="p-5 rounded-3xl bg-[#0d0e22] border border-purple-500/30 shadow-xl space-y-4 backdrop-blur-md">
-            <p className="text-xs text-purple-200/80 leading-relaxed">
-              Tirez une fiche de mémorisation active pour réviser un concept clé avant votre prochaine épreuve.
+          {/* Language Filter Tabs */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+            <button
+              onClick={() => setSelectedLangFilter('all')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all ${
+                selectedLangFilter === 'all'
+                  ? 'bg-[#0A26E6] text-white font-semibold shadow-sm'
+                  : 'bg-[#070919] border border-slate-800 text-slate-400 hover:text-white'
+              }`}
+            >
+              Toutes
+            </button>
+            <button
+              onClick={() => setSelectedLangFilter('nl')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 ${
+                selectedLangFilter === 'nl'
+                  ? 'bg-[#0A26E6] text-white font-semibold shadow-sm'
+                  : 'bg-[#070919] border border-slate-800 text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>🇳🇱</span>
+              <span>Néerlandais</span>
+            </button>
+            <button
+              onClick={() => setSelectedLangFilter('en')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 ${
+                selectedLangFilter === 'en'
+                  ? 'bg-[#0A26E6] text-white font-semibold shadow-sm'
+                  : 'bg-[#070919] border border-slate-800 text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>🇬🇧</span>
+              <span>Anglais</span>
+            </button>
+            <button
+              onClick={() => setSelectedLangFilter('es')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 ${
+                selectedLangFilter === 'es'
+                  ? 'bg-[#0A26E6] text-white font-semibold shadow-sm'
+                  : 'bg-[#070919] border border-slate-800 text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>🇪🇸</span>
+              <span>Espagnol</span>
+            </button>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-[#0B0E23] border border-slate-800 shadow-xl space-y-3">
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Sélectionnez une carte pour tester votre mémoire et écouter la prononciation authentique.
             </p>
 
-            {flashcards.slice(0, 3).map((fc) => (
-              <div
-                key={fc.id}
-                onClick={() => {
-                  soundEngine.playClick();
-                  setActiveFlashcard(fc);
-                  setShowAnswer(false);
-                }}
-                className="p-3.5 rounded-2xl bg-[#121432] border border-purple-500/20 hover:border-pink-400/50 shadow-sm transition-all cursor-pointer group"
-              >
-                <div className="text-[10px] font-bold text-rose-400 uppercase mb-1">
-                  {fc.subject}
+            <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+              {filteredFlashcards.map((fc) => (
+                <div
+                  key={fc.id}
+                  onClick={() => {
+                    soundEngine.playClick();
+                    setActiveFlashcard(fc);
+                    setShowAnswer(false);
+                  }}
+                  className="p-3 rounded-xl bg-[#070919] border border-slate-800 hover:border-[#0A26E6]/60 shadow-sm transition-all cursor-pointer group"
+                >
+                  <div className="flex items-center justify-between text-[10px] font-mono mb-1">
+                    <span className="text-cyan-400 font-semibold uppercase">{fc.subject}</span>
+                    <span>
+                      {fc.language === 'nl'
+                        ? '🇳🇱 Nederlands'
+                        : fc.language === 'en'
+                        ? '🇬🇧 English'
+                        : fc.language === 'es'
+                        ? '🇪🇸 Español'
+                        : '🇫🇷 Français'}
+                    </span>
+                  </div>
+                  <div className="text-xs font-semibold text-slate-200 line-clamp-2 group-hover:text-cyan-300 transition-colors">
+                    {fc.front}
+                  </div>
                 </div>
-                <div className="text-xs font-semibold text-slate-200 line-clamp-2 group-hover:text-pink-300 transition-colors">
-                  {fc.front}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Active Modal Flashcard if clicked */}
           {activeFlashcard && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-              <div className="relative w-full max-w-md rounded-3xl border border-purple-500/40 bg-[#0d0f22] p-6 shadow-2xl space-y-4 text-center">
-                <div className="text-xs font-bold text-rose-400 uppercase">
-                  {activeFlashcard.subject} · Fiche de Mémorisation
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+              <div className="relative w-full max-w-md rounded-2xl border border-slate-700 bg-[#0B0E23] p-6 shadow-2xl space-y-4 text-center">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="text-cyan-400 font-bold uppercase">
+                    {activeFlashcard.subject}
+                  </span>
+                  <span className="text-slate-400">
+                    {activeFlashcard.language === 'nl'
+                      ? '🇳🇱 Néerlandais'
+                      : activeFlashcard.language === 'en'
+                      ? '🇬🇧 Anglais'
+                      : activeFlashcard.language === 'es'
+                      ? '🇪🇸 Espagnol'
+                      : '🇫🇷 Français'}
+                  </span>
                 </div>
 
-                <div className="text-base font-bold text-white font-editorial">
+                <div className="text-base font-bold text-white tracking-tight leading-snug">
                   {activeFlashcard.front}
                 </div>
 
+                {/* Pronunciation button for Question */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => {
+                      soundEngine.playClick();
+                      const voiceLang =
+                        activeFlashcard.language === 'nl'
+                          ? 'nl-NL'
+                          : activeFlashcard.language === 'en'
+                          ? 'en-US'
+                          : activeFlashcard.language === 'es'
+                          ? 'es-ES'
+                          : 'fr-FR';
+                      speechHelper.speak(activeFlashcard.front, voiceLang);
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#070919] border border-slate-700 text-xs text-slate-300 hover:text-white hover:border-[#0A26E6] transition-colors"
+                  >
+                    <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Écouter la question</span>
+                  </button>
+                </div>
+
                 {showAnswer ? (
-                  <div className="p-4 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-xs text-emerald-200 font-medium leading-relaxed animate-fadeIn">
-                    {activeFlashcard.back}
+                  <div className="p-4 rounded-xl bg-[#070919] border border-emerald-500/40 text-xs text-emerald-200 font-medium leading-relaxed animate-fadeIn space-y-2">
+                    <div>{activeFlashcard.back}</div>
+
+                    {/* Pronunciation button for Answer */}
+                    <div className="flex justify-center pt-1">
+                      <button
+                        onClick={() => {
+                          soundEngine.playClick();
+                          const voiceLang =
+                            activeFlashcard.language === 'nl'
+                              ? 'nl-NL'
+                              : activeFlashcard.language === 'en'
+                              ? 'en-US'
+                              : activeFlashcard.language === 'es'
+                              ? 'es-ES'
+                              : 'fr-FR';
+                          speechHelper.speak(activeFlashcard.back, voiceLang);
+                        }}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0B0E23] border border-emerald-500/30 text-[11px] text-emerald-300 hover:text-white transition-colors"
+                      >
+                        <Volume2 className="w-3 h-3 text-emerald-400" />
+                        <span>Écouter la réponse</span>
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <button
@@ -265,18 +399,20 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
                       soundEngine.playSuccess();
                       setShowAnswer(true);
                     }}
-                    className="w-full py-3 text-xs font-semibold text-pink-300 bg-purple-900/50 hover:bg-purple-800/60 rounded-2xl border border-purple-500/30 transition-colors"
+                    className="w-full py-3 text-xs font-semibold text-cyan-300 bg-[#070919] hover:bg-[#0E1333] rounded-xl border border-slate-700 transition-colors"
                   >
                     Retourner la fiche pour voir la réponse ✨
                   </button>
                 )}
 
-                <button
-                  onClick={() => setActiveFlashcard(null)}
-                  className="px-5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 rounded-xl shadow-md"
-                >
-                  Fermer la Fiche
-                </button>
+                <div className="pt-2">
+                  <button
+                    onClick={() => setActiveFlashcard(null)}
+                    className="w-full py-2.5 text-xs font-semibold text-white bg-[#0A26E6] hover:bg-[#1F3BF5] rounded-xl shadow-[0_0_15px_rgba(10,38,230,0.35)] transition-all"
+                  >
+                    Fermer la Fiche
+                  </button>
+                </div>
               </div>
             </div>
           )}

@@ -156,8 +156,23 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
             ← Quitter le Chantier
           </button>
           <div>
-            <h3 className="text-sm font-bold text-white tracking-tight">
-              Mission d'Édification : {challenge.buildingName}
+            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+              <span>Mission d'Édification : {challenge.buildingName}</span>
+              {challenge.language === 'nl' && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                  🇳🇱 Néerlandais
+                </span>
+              )}
+              {challenge.language === 'en' && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 text-blue-300">
+                  🇬🇧 Anglais
+                </span>
+              )}
+              {challenge.language === 'es' && (
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-red-500/10 border border-red-500/30 text-red-300">
+                  🇪🇸 Espagnol
+                </span>
+              )}
             </h3>
             <span className="text-xs text-cyan-400 font-mono">
               Étape {currentQIndex + 1} / {challenge.questions.length} · {challenge.subject}
@@ -233,7 +248,15 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
               <button
                 onClick={() => {
                   soundEngine.playClick();
-                  speechHelper.speak(currentQ.question);
+                  const targetVoice =
+                    currentQ.language === 'nl'
+                      ? 'nl-NL'
+                      : currentQ.language === 'en'
+                      ? 'en-US'
+                      : currentQ.language === 'es'
+                      ? 'es-ES'
+                      : 'fr-FR';
+                  speechHelper.speak(currentQ.question, targetVoice);
                 }}
                 className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-[#070919] border border-slate-700 transition-colors flex items-center gap-1.5 text-[11px] font-sans font-medium"
                 title="Écouter la question à voix haute"
@@ -383,7 +406,15 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
                 <button
                   onClick={() => {
                     soundEngine.playClick();
-                    speechHelper.speak(currentQ.explanation);
+                    const targetVoice =
+                      currentQ.language === 'nl'
+                        ? 'nl-NL'
+                        : currentQ.language === 'en'
+                        ? 'en-US'
+                        : currentQ.language === 'es'
+                        ? 'es-ES'
+                        : 'fr-FR';
+                    speechHelper.speak(currentQ.explanation, targetVoice);
                   }}
                   className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#0B0E23] transition-colors shrink-0"
                   title="Écouter l'explication à voix haute"

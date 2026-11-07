@@ -139,6 +139,33 @@ const MENTORS: Mentor[] = [
       },
     ],
   },
+  {
+    id: 'erasme_rotterdam',
+    name: 'Erasmus van Rotterdam',
+    role: 'Grand Humaniste, Polyglotte & Éducateur',
+    subject: 'Langues & Néerlandais (Nederlands)',
+    avatar: '🌷',
+    color: 'from-amber-500 to-orange-700',
+    greeting:
+      '« Welkom, jonge ontdekker ! Né à Rotterdam, j’ai voyagé dans toute l’Europe en parlant néerlandais, français, anglais et latin. Apprendre les langues, c’est bâtir des ponts d’amitié entre les peuples ! »',
+    presetQuestions: [
+      {
+        q: 'Pourquoi apprendre le néerlandais à 10 ans est une excellente idée ?',
+        answer:
+          'Le néerlandais est parlé par plus de 28 millions de personnes en Belgique, aux Pays-Bas et dans toute l’Europe ! C’est une langue germanique très chaleureuse, cousine de l’anglais, qui développe une oreille linguistique formidable.',
+      },
+      {
+        q: 'Quels sont les premiers mots essentiels en néerlandais ?',
+        answer:
+          'Retiens ce trio en or : « Goedemorgen » pour saluer le matin avec un grand sourire, « Alsjeblieft » pour demander poliment ou tendre quelque chose, et « Dank je wel » pour remercier chaleureusement !',
+      },
+      {
+        q: 'Comment faire pour retenir facilement les mots d’une langue étrangère ?',
+        answer:
+          'Associe chaque mot à une image ou à un son familier ! Répète-le à voix haute grâce au bouton audio de prononciation, et revois tes flashcards chaque matin pendant deux petites minutes.',
+      },
+    ],
+  },
 ];
 
 export const MentorsModal: React.FC<MentorsModalProps> = ({ isOpen, onClose }) => {

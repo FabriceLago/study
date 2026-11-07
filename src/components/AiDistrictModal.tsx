@@ -17,6 +17,7 @@ export const AiDistrictModal: React.FC<AiDistrictModalProps> = ({
   const [topic, setTopic] = useState('');
   const [buildingIdea, setBuildingIdea] = useState('');
   const [targetCity, setTargetCity] = useState<'auto' | SubjectCityId>('auto');
+  const [questLang, setQuestLang] = useState<'fr' | 'nl' | 'en' | 'es'>('fr');
   const [schoolGrade, setSchoolGrade] = useState('Collège (6e - 3e)');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,18 @@ export const AiDistrictModal: React.FC<AiDistrictModalProps> = ({
     if (s.includes('bio') || s.includes('scien') || s.includes('phys') || s.includes('chim') || s.includes('nature') || s.includes('svt')) return 'sciences';
     if (s.includes('hist') || s.includes('géo') || s.includes('patrimoine') || s.includes('citoyen')) return 'histoire';
     if (s.includes('fran') || s.includes('litt') || s.includes('gramm') || s.includes('poé') || s.includes('ortho')) return 'francais';
-    if (s.includes('angl') || s.includes('esp') || s.includes('lang') || s.includes('allem') || s.includes('ital')) return 'langues';
+    if (
+      s.includes('angl') ||
+      s.includes('esp') ||
+      s.includes('lang') ||
+      s.includes('neerl') ||
+      s.includes('nederl') ||
+      s.includes('dutch') ||
+      s.includes('flamand') ||
+      s.includes('allem') ||
+      s.includes('ital')
+    )
+      return 'langues';
     if (s.includes('code') || s.includes('info') || s.includes('algo') || s.includes('tech') || s.includes('numér')) return 'informatique';
     return 'francais';
   };
@@ -270,7 +282,23 @@ export const AiDistrictModal: React.FC<AiDistrictModalProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="text-xs font-semibold text-slate-300 block mb-1">
+                Langue d’Étude
+              </label>
+              <select
+                value={questLang}
+                onChange={(e) => setQuestLang(e.target.value as any)}
+                className="w-full px-3 py-2 bg-[#121432] border border-purple-500/30 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+              >
+                <option value="fr" className="bg-[#0d0f22] text-white">🇫🇷 Français</option>
+                <option value="nl" className="bg-[#0d0f22] text-white">🇳🇱 Néerlandais</option>
+                <option value="en" className="bg-[#0d0f22] text-white">🇬🇧 Anglais</option>
+                <option value="es" className="bg-[#0d0f22] text-white">🇪🇸 Espagnol</option>
+              </select>
+            </div>
+
             <div>
               <label className="text-xs font-semibold text-slate-300 block mb-1">
                 Niveau Scolaire
@@ -292,8 +320,8 @@ export const AiDistrictModal: React.FC<AiDistrictModalProps> = ({
               <label className="text-xs font-semibold text-slate-300 block mb-1">
                 Matière scolaire
               </label>
-              <div className="text-xs text-purple-300 py-2.5 px-3 bg-[#121432] border border-purple-500/20 rounded-xl">
-                {targetCity === 'auto' ? 'Détectée automatiquement' : `Assignée à ${targetCity}`}
+              <div className="text-xs text-cyan-300 py-2.5 px-3 bg-[#121432] border border-purple-500/20 rounded-xl font-mono truncate">
+                {targetCity === 'auto' ? 'Automatique' : targetCity}
               </div>
             </div>
           </div>

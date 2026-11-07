@@ -65,6 +65,8 @@ export interface ArchipelagoStats {
   unlockedBadges: string[];
 }
 
+export type StudyLanguage = 'fr' | 'nl' | 'en' | 'es';
+
 export interface Question {
   id: string;
   question: string;
@@ -74,6 +76,7 @@ export interface Question {
   explanation: string;
   xp: number;
   bricks: number;
+  language?: StudyLanguage;
 }
 
 export interface SiteForeman {
@@ -99,6 +102,7 @@ export interface ConstructionChallenge {
   rewardXp: number;
   unlocksBuildingId: string;
   isAiGenerated?: boolean;
+  language?: StudyLanguage;
 }
 
 export interface DecorationItem {
@@ -120,6 +124,7 @@ export interface Flashcard {
   back: string;
   box: number;
   timesReviewed: number;
+  language?: StudyLanguage;
 }
 
 export interface AchievementBadge {
