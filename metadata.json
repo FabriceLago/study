@@ -1,0 +1,6 @@
+{
+  "name": "StudyQuest – Bâtis ta Cité en Apprenant",
+  "description": "Jeu éducatif d'aménagement de ville : révisez vos cours, gagnez des matériaux nobles et construisez la plus belle cité du savoir.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
