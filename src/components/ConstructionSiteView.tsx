@@ -159,7 +159,7 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
             <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
               <span>Mission d'Édification : {challenge.buildingName}</span>
               {challenge.language === 'nl' && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
                   🇳🇱 Néerlandais
                 </span>
               )}
@@ -184,7 +184,7 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
         <div
           className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-semibold border ${
             isTimerPaused
-              ? 'bg-[#070919] text-amber-300 border-amber-500/40'
+              ? 'bg-[#070919] text-emerald-300 border-emerald-500/40'
               : timerSeconds <= 8
               ? 'bg-rose-950/80 text-rose-300 border-rose-500/40 animate-pulse'
               : 'bg-[#070919] text-cyan-400 border-slate-800'
@@ -192,41 +192,41 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
         >
           <Clock className="w-3.5 h-3.5" />
           <span>{timerSeconds}s</span>
-          {isTimerPaused && <span className="text-[10px] text-amber-400 font-sans">Pause Mentor</span>}
+          {isTimerPaused && <span className="text-[10px] text-emerald-400 font-sans">Pause Mentor</span>}
         </div>
       </div>
 
       {/* Foreman & Construction Progress */}
-      <div className="rounded-2xl border border-slate-800 bg-[#0B0E23] p-5 shadow-xl">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0B0E23] p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-[#070919] border border-slate-700 flex items-center justify-center text-3xl shadow-inner shrink-0">
+          <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-[#070919] border border-slate-200 dark:border-slate-700 flex items-center justify-center text-3xl shadow-inner shrink-0">
             {challenge.foreman.avatar}
           </div>
 
           <div className="min-w-0 flex-1 text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start gap-2">
-              <h4 className="text-sm font-bold text-white tracking-tight">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
                 {challenge.foreman.name}
               </h4>
-              <span className="text-[11px] text-cyan-400 font-mono">
+              <span className="text-[11px] text-sky-600 dark:text-cyan-400 font-mono">
                 [{challenge.foreman.role}]
               </span>
             </div>
-            <p className="text-xs text-slate-300 italic mt-1 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-300 italic mt-1 leading-relaxed">
               « {challenge.foreman.dialogue} »
             </p>
 
             {/* Gauge */}
             <div className="mt-3">
               <div className="flex justify-between text-xs font-mono mb-1.5">
-                <span className="text-slate-400">Progression Opérationnelle</span>
-                <span className="text-cyan-400 font-bold tabular-nums">
+                <span className="text-slate-500 dark:text-slate-400">Progression Opérationnelle</span>
+                <span className="text-sky-600 dark:text-cyan-400 font-bold tabular-nums">
                   {progressPercent}% achevé
                 </span>
               </div>
-              <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+              <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
                 <div
-                  className="h-full bg-gradient-to-r from-[#0A26E6] to-[#38bdf8] transition-all duration-500 shadow-[0_0_12px_rgba(10,38,230,0.6)]"
+                  className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-sky-400 transition-all duration-500 shadow-sm"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -237,11 +237,11 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
 
       {/* Active Question Stage */}
       {siteState === 'BUILDING' && (
-        <div className="bg-[#0B0E23] border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+        <div className="bg-white dark:bg-[#0B0E23] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
           <div>
-            <div className="text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-2 flex items-center justify-between font-mono">
+            <div className="text-xs font-semibold text-sky-600 dark:text-cyan-400 uppercase tracking-wider mb-2 flex items-center justify-between font-mono">
               <div className="flex items-center gap-2">
-                <Layers className="w-3.5 h-3.5 text-[#0A26E6]" />
+                <Layers className="w-3.5 h-3.5 text-emerald-500" />
                 <span>Question d’Édification #{currentQIndex + 1}</span>
               </div>
 
@@ -258,32 +258,32 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
                       : 'fr-FR';
                   speechHelper.speak(currentQ.question, targetVoice);
                 }}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-[#070919] border border-slate-700 transition-colors flex items-center gap-1.5 text-[11px] font-sans font-medium"
+                className="p-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#070919] border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5 text-[11px] font-sans font-medium"
                 title="Écouter la question à voix haute"
               >
-                <Volume2 className="w-4 h-4 text-cyan-400" />
+                <Volume2 className="w-4 h-4 text-sky-600 dark:text-cyan-400" />
                 <span>Écouter</span>
               </button>
             </div>
-            <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
               {currentQ.question}
             </h3>
           </div>
 
           {/* Architect Tools Bar */}
-          <div className="flex flex-wrap items-center gap-2 p-2.5 bg-[#070919] border border-slate-800 rounded-xl">
-            <span className="text-xs text-slate-400 font-mono px-2">Assistance :</span>
+          <div className="flex flex-wrap items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#070919] border border-slate-200 dark:border-slate-800 rounded-xl">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono px-2">Assistance :</span>
 
             <button
               disabled={isAnswered || showHint}
               onClick={handleUseHint}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg flex items-center gap-1.5 transition-colors ${
                 showHint
-                  ? 'bg-[#0A26E6]/20 text-cyan-300 border border-[#0A26E6]/50'
-                  : 'bg-[#0B0E23] hover:bg-[#12183c] text-slate-300 border border-slate-800'
+                  ? 'bg-emerald-100 dark:bg-[#0A26E6]/20 text-emerald-800 dark:text-cyan-300 border border-emerald-300 dark:border-[#0A26E6]/50'
+                  : 'bg-white dark:bg-[#0B0E23] hover:bg-slate-100 dark:hover:bg-[#12183c] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
               }`}
             >
-              <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
+              <HelpCircle className="w-3.5 h-3.5 text-emerald-500" />
               <span>Indice Pédagogique</span>
             </button>
 
@@ -292,11 +292,11 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
               onClick={handleUseFiftyFifty}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg flex items-center gap-1.5 transition-colors ${
                 eliminatedOptions.length > 0
-                  ? 'bg-[#0A26E6]/20 text-cyan-300 border border-[#0A26E6]/50'
-                  : 'bg-[#0B0E23] hover:bg-[#12183c] text-slate-300 border border-slate-800'
+                  ? 'bg-emerald-100 dark:bg-[#0A26E6]/20 text-emerald-800 dark:text-cyan-300 border border-emerald-300 dark:border-[#0A26E6]/50'
+                  : 'bg-white dark:bg-[#0B0E23] hover:bg-slate-100 dark:hover:bg-[#12183c] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
               <span>Filtre 50/50</span>
             </button>
 
@@ -305,20 +305,20 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
               onClick={handleUseTeaBreak}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg flex items-center gap-1.5 transition-colors ${
                 isTimerPaused
-                  ? 'bg-amber-950/60 text-amber-300 border border-amber-500/40'
-                  : 'bg-[#0B0E23] hover:bg-[#12183c] text-slate-300 border border-slate-800'
+                  ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/40'
+                  : 'bg-white dark:bg-[#0B0E23] hover:bg-slate-100 dark:hover:bg-[#12183c] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800'
               }`}
             >
-              <Coffee className="w-3.5 h-3.5 text-amber-400" />
+              <Coffee className="w-3.5 h-3.5 text-emerald-500" />
               <span>Pause Mentor (+20s)</span>
             </button>
           </div>
 
           {showHint && (
-            <div className="p-3 bg-[#070919] border border-cyan-500/30 rounded-xl text-xs text-cyan-200 leading-relaxed flex items-start gap-2 animate-fadeIn">
-              <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+            <div className="p-3 bg-emerald-50 dark:bg-[#070919] border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed flex items-start gap-2 animate-fadeIn">
+              <Sparkles className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold text-white">Indice de l'architecte : </span>
+                <span className="font-semibold text-slate-900 dark:text-white">Indice de l'architecte : </span>
                 {currentQ.hint}
               </div>
             </div>
@@ -332,20 +332,20 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
               const isCorrectOpt = index === currentQ.correctIndex;
 
               let style =
-                'bg-[#070919] border-slate-800 text-slate-200 hover:border-[#0A26E6] hover:bg-[#0E1438]';
+                'bg-slate-50 dark:bg-[#070919] border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-emerald-500 hover:bg-slate-100 dark:hover:bg-[#0E1438]';
 
               if (isAnswered) {
                 if (isCorrectOpt) {
                   style =
-                    'bg-emerald-950/60 border-emerald-400 text-emerald-200 font-semibold shadow-md';
+                    'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-400 text-emerald-900 dark:text-emerald-200 font-semibold shadow-sm';
                 } else if (isPicked && !isCorrectOpt) {
-                  style = 'bg-rose-950/60 border-rose-500 text-rose-200';
+                  style = 'bg-rose-50 dark:bg-rose-950/60 border-rose-400 text-rose-900 dark:text-rose-200';
                 } else {
-                  style = 'bg-[#05050D] border-slate-900 text-slate-600 opacity-40';
+                  style = 'bg-slate-100 dark:bg-[#05050D] border-slate-200 dark:border-slate-900 text-slate-400 dark:text-slate-600 opacity-40';
                 }
               } else if (isEliminated) {
                 style =
-                  'bg-[#05050D] border-slate-900 text-slate-600 line-through opacity-30 cursor-not-allowed';
+                  'bg-slate-100 dark:bg-[#05050D] border-slate-200 dark:border-slate-900 text-slate-400 dark:text-slate-600 line-through opacity-30 cursor-not-allowed';
               }
 
               return (
@@ -353,17 +353,17 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
                   key={index}
                   disabled={isAnswered || isEliminated}
                   onClick={() => handleAnswer(index)}
-                  className={`p-4 rounded-xl border text-left text-xs sm:text-sm transition-all duration-150 flex items-start gap-3 shadow-sm ${style}`}
+                  className={`p-4 rounded-xl border text-left text-xs sm:text-sm transition-all duration-150 flex items-start gap-3 shadow-xs ${style}`}
                 >
-                  <span className="w-6 h-6 rounded-md bg-[#0B0E23] text-cyan-400 flex items-center justify-center text-xs font-mono font-bold shrink-0 border border-slate-700">
+                  <span className="w-6 h-6 rounded-md bg-white dark:bg-[#0B0E23] text-sky-600 dark:text-cyan-400 flex items-center justify-center text-xs font-mono font-bold shrink-0 border border-slate-200 dark:border-slate-700">
                     {String.fromCharCode(65 + index)}
                   </span>
                   <span className="flex-1 pt-0.5 leading-snug">{option}</span>
                   {isAnswered && isCorrectOpt && (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
                   )}
                   {isAnswered && isPicked && !isCorrectOpt && (
-                    <XCircle className="w-5 h-5 text-rose-400 shrink-0" />
+                    <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
                   )}
                 </button>
               );
@@ -393,7 +393,7 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
                     </>
                   )}
                 </span>
-                <span className="text-xs font-mono font-semibold text-amber-300">
+                <span className="text-xs font-mono font-semibold text-emerald-400">
                   +{isCorrect ? currentQ.xp : 0} XP
                 </span>
               </div>
@@ -466,7 +466,7 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
             </div>
             <div>
               <div className="text-[11px] text-slate-400">Briques Dorées</div>
-              <div className="text-base sm:text-lg font-bold font-mono text-amber-400">
+              <div className="text-base sm:text-lg font-bold font-mono text-emerald-400">
                 +{challenge.rewardBricks + earnedBricks} 🧱
               </div>
             </div>
@@ -503,7 +503,7 @@ export const ConstructionSiteView: React.FC<ConstructionSiteViewProps> = ({
       {/* Retry Screen */}
       {siteState === 'RETRY' && (
         <div className="bg-[#0B0E23] border border-slate-800 rounded-2xl p-8 text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-950/40 border border-amber-500/30 flex items-center justify-center text-3xl">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-center text-3xl">
             📐
           </div>
           <div className="space-y-2">

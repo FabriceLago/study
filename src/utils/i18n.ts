@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 export type StudyLanguage = 'fr' | 'nl' | 'en' | 'es';
 
 export interface LanguageInfo {
@@ -99,19 +101,34 @@ export interface TranslationDictionary {
   listenSpeech: string;
   // Audio
   audioVoiceLang: string;
+  // New features
+  duel1v1: string;
+  caseOpening: string;
+  voiceChallenge: string;
+  videoDemo: string;
+  memoNotebook: string;
+  miniGames: string;
+  homework: string;
+  certificate: string;
+  passport: string;
+  coins: string;
+  bricks: string;
+  flowers: string;
+  liveDrops: string;
+  season1: string;
 }
 
 export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
   fr: {
-    appName: 'StudyQuest',
-    appSubtitle: 'Poste de Commandement Pédagogique',
+    appName: 'Study',
+    appSubtitle: 'Esports & Academy Pédagogique',
     systemOperational: 'Système Opérationnel · 6 Cités',
     muteAll: 'Couper le son',
     unmuteAll: 'Activer le son',
     soundOn: 'Audio Actif',
     soundMuted: 'Audio Coupé',
     searchPlaceholder: 'Rechercher un cours, monument, défi...',
-    studyLanguage: 'Langue d’étude',
+    studyLanguage: 'Langue de la plateforme',
     switchLanguage: 'Changer de langue',
     tabPlan: 'Plan du Sommet',
     tabCity: 'Cités Scolaires',
@@ -152,17 +169,31 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     filterSpanish: 'Espagnol 🇪🇸',
     listenSpeech: 'Écouter la prononciation',
     audioVoiceLang: 'fr-FR',
+    duel1v1: 'Duel 1v1 Esport',
+    caseOpening: 'Caisses & Butin',
+    voiceChallenge: 'Défi Vocal Micro',
+    videoDemo: 'Démo 1 min',
+    memoNotebook: 'Carnet Mémo',
+    miniGames: 'Mini-Jeux (60s)',
+    homework: 'Devoirs',
+    certificate: 'Brevet Officiel',
+    passport: 'Passeport',
+    coins: 'Pièces',
+    bricks: 'Briques Dorées',
+    flowers: 'Fleurs',
+    liveDrops: 'Live Drops',
+    season1: 'Saison 1',
   },
   nl: {
-    appName: 'StudyQuest',
-    appSubtitle: 'Pedagogische Commandocentrale',
+    appName: 'Study',
+    appSubtitle: 'Esports & Pedagogische Academie',
     systemOperational: 'Systeem Operationeel · 6 Steden',
     muteAll: 'Geluid Dempen',
     unmuteAll: 'Geluid Aan',
     soundOn: 'Audio Actief',
     soundMuted: 'Audio Gedempt',
     searchPlaceholder: 'Zoek een les, monument, uitdaging...',
-    studyLanguage: 'Studietaal',
+    studyLanguage: 'Platformtaal',
     switchLanguage: 'Taal wijzigen',
     tabPlan: 'Bergexpeditie Plan',
     tabCity: 'Schoolsteden',
@@ -203,17 +234,31 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     filterSpanish: 'Spaans 🇪🇸',
     listenSpeech: 'Beluister uitspraak',
     audioVoiceLang: 'nl-NL',
+    duel1v1: '1v1 Esport Duel',
+    caseOpening: 'Kisten & Buit',
+    voiceChallenge: 'Spraakmicrofoon Uitdaging',
+    videoDemo: 'Demo 1 min',
+    memoNotebook: 'Lesnotities',
+    miniGames: 'Mini-Games (60s)',
+    homework: 'Huiswerk',
+    certificate: 'Officieel Brevet',
+    passport: 'Paspoort',
+    coins: 'Munten',
+    bricks: 'Gouden Bakstenen',
+    flowers: 'Bloemen',
+    liveDrops: 'Live Drops',
+    season1: 'Seizoen 1',
   },
   en: {
-    appName: 'StudyQuest',
-    appSubtitle: 'Learning Command Center',
+    appName: 'Study',
+    appSubtitle: 'Esports & Learning Academy',
     systemOperational: 'System Operational · 6 Cities',
     muteAll: 'Mute All',
     unmuteAll: 'Unmute All',
     soundOn: 'Audio Active',
     soundMuted: 'Audio Muted',
     searchPlaceholder: 'Search for courses, monuments, challenges...',
-    studyLanguage: 'Study Language',
+    studyLanguage: 'Platform Language',
     switchLanguage: 'Switch language',
     tabPlan: 'Mountain Plan',
     tabCity: 'Subject Cities',
@@ -254,17 +299,31 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     filterSpanish: 'Spanish 🇪🇸',
     listenSpeech: 'Listen to pronunciation',
     audioVoiceLang: 'en-US',
+    duel1v1: '1v1 Esport Duel',
+    caseOpening: 'Cases & Loot',
+    voiceChallenge: 'Voice Mic Challenge',
+    videoDemo: '1 Min Demo',
+    memoNotebook: 'Notebook',
+    miniGames: 'Mini-Games (60s)',
+    homework: 'Homework',
+    certificate: 'Official Diploma',
+    passport: 'Passport',
+    coins: 'Coins',
+    bricks: 'Golden Bricks',
+    flowers: 'Flowers',
+    liveDrops: 'Live Drops',
+    season1: 'Season 1',
   },
   es: {
-    appName: 'StudyQuest',
-    appSubtitle: 'Centro de Mando de Aprendizaje',
+    appName: 'Study',
+    appSubtitle: 'Academia y Esports de Aprendizaje',
     systemOperational: 'Sistema Operativo · 6 Ciudades',
     muteAll: 'Silenciar Todo',
     unmuteAll: 'Activar Sonido',
     soundOn: 'Audio Activo',
     soundMuted: 'Audio Silenciado',
     searchPlaceholder: 'Buscar un curso, monumento, reto...',
-    studyLanguage: 'Idioma de estudio',
+    studyLanguage: 'Idioma de la plataforma',
     switchLanguage: 'Cambiar de idioma',
     tabPlan: 'Plan de la Cumbre',
     tabCity: 'Ciudades Escolares',
@@ -305,6 +364,20 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     filterSpanish: 'Español 🇪🇸',
     listenSpeech: 'Escuchar pronunciación',
     audioVoiceLang: 'es-ES',
+    duel1v1: 'Duelo 1v1 Esport',
+    caseOpening: 'Cajas y Botín',
+    voiceChallenge: 'Reto de Voz Micro',
+    videoDemo: 'Demo 1 min',
+    memoNotebook: 'Cuaderno Memo',
+    miniGames: 'Mini-Juegos (60s)',
+    homework: 'Deberes',
+    certificate: 'Brevet Oficial',
+    passport: 'Pasaporte',
+    coins: 'Monedas',
+    bricks: 'Ladrillos Dorados',
+    flowers: 'Flores',
+    liveDrops: 'Live Drops',
+    season1: 'Temporada 1',
   },
 };
 
@@ -363,3 +436,24 @@ class I18nManager {
 }
 
 export const i18n = new I18nManager();
+
+/**
+ * React hook to reactively consume translations and language updates across components
+ */
+export function useLanguage() {
+  const [lang, setLang] = useState<StudyLanguage>(() => i18n.getLanguage());
+
+  useEffect(() => {
+    return i18n.subscribe((newLang) => {
+      setLang(newLang);
+    });
+  }, []);
+
+  return {
+    lang,
+    t: i18n.t(),
+    setLanguage: (newLang: StudyLanguage) => i18n.setLanguage(newLang),
+    langInfo: i18n.getLanguageInfo(),
+    supportedLanguages: SUPPORTED_LANGUAGES,
+  };
+}

@@ -11,31 +11,37 @@
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
-  background-color: #fffaf7;
-  color: #1e293b;
 }
 
 .font-editorial {
   font-family: 'Fraunces', Georgia, serif;
 }
 
-/* Custom scrollbar for pastel panels */
+/* Custom scrollbar for light and dark themes */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(254, 242, 242, 0.6);
+  background: #f1f5f9;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #101117;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(244, 114, 182, 0.35);
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #232635;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(244, 114, 182, 0.6);
+  background: #10B981;
 }
 
 /* Shimmer animation for golden construction blocks */

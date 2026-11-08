@@ -38,6 +38,12 @@ import { CompanionWidget } from './components/CompanionWidget';
 import { CertificateModal } from './components/CertificateModal';
 import { MiniGamesModal } from './components/MiniGamesModal';
 import { HomeworkPlannerModal } from './components/HomeworkPlannerModal';
+import { EuropeanPassportModal } from './components/EuropeanPassportModal';
+import { PrintFlashcardsModal } from './components/PrintFlashcardsModal';
+import { VideoDemoModal } from './components/VideoDemoModal';
+import { EsportDuelModal } from './components/EsportDuelModal';
+import { Cs2CaseOpeningModal } from './components/Cs2CaseOpeningModal';
+import { VoiceChallengeModal } from './components/VoiceChallengeModal';
 import { soundEngine } from './utils/audio';
 
 export default function App() {
@@ -112,9 +118,44 @@ export default function App() {
   const [isCertificateOpen, setIsCertificateOpen] = useState(false);
   const [isMiniGamesOpen, setIsMiniGamesOpen] = useState(false);
   const [isHomeworkOpen, setIsHomeworkOpen] = useState(false);
+  const [isPassportOpen, setIsPassportOpen] = useState(false);
+  const [isPrintOpen, setIsPrintOpen] = useState(false);
+  const [isVideoDemoOpen, setIsVideoDemoOpen] = useState(false);
+  const [isDuelOpen, setIsDuelOpen] = useState(false);
+  const [isCasesOpen, setIsCasesOpen] = useState(false);
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
   const [timeOfDay, setTimeOfDay] = useState<AmbientTimeOfDay>('dusk');
   const [isMuted, setIsMuted] = useState(() => soundEngine.isMuted());
   const [searchQuery, setSearchQuery] = useState('');
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    try {
+      const saved = localStorage.getItem('study_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
+    } catch {}
+    return 'dark';
+  });
+
+  // Synchronize documentElement theme class and localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('study_theme', theme);
+    } catch {}
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    soundEngine.playClick();
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Synchronize audio engine mute state
   useEffect(() => {
@@ -466,7 +507,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#05050D] text-[#EFF0F4] flex flex-row selection:bg-[#0A26E6]/50 selection:text-white font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0C0D12] text-slate-800 dark:text-[#EFF0F4] flex flex-row selection:bg-emerald-500/30 selection:text-white font-sans transition-colors duration-200">
       {/* 1. Left Vertical Sidebar (matching reference design) */}
       <Sidebar
         currentTab={currentTab}
@@ -475,6 +516,9 @@ export default function App() {
           setCurrentTab(tab);
         }}
         onOpenAiForge={() => setIsAiForgeOpen(true)}
+        onOpenDuel={() => setIsDuelOpen(true)}
+        onOpenCases={() => setIsCasesOpen(true)}
+        onOpenVoice={() => setIsVoiceOpen(true)}
       />
 
       {/* 2. Main Body Container with Top Header and Dynamic Content */}
@@ -494,6 +538,12 @@ export default function App() {
           setIsMuted={setIsMuted}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onOpenVideoDemo={() => setIsVideoDemoOpen(true)}
+          onOpenDuel={() => setIsDuelOpen(true)}
+          onOpenCases={() => setIsCasesOpen(true)}
+          onOpenVoice={() => setIsVoiceOpen(true)}
         />
 
         {/* Dynamic Main Workspace View */}
@@ -527,6 +577,12 @@ export default function App() {
                   onOpenCertificate={() => setIsCertificateOpen(true)}
                   onOpenMiniGames={() => setIsMiniGamesOpen(true)}
                   onOpenHomework={() => setIsHomeworkOpen(true)}
+                  onOpenPassport={() => setIsPassportOpen(true)}
+                  onOpenPrint={() => setIsPrintOpen(true)}
+                  onOpenVideoDemo={() => setIsVideoDemoOpen(true)}
+                  onOpenDuel={() => setIsDuelOpen(true)}
+                  onOpenCases={() => setIsCasesOpen(true)}
+                  onOpenVoice={() => setIsVoiceOpen(true)}
                 />
               )}
 
@@ -586,6 +642,7 @@ export default function App() {
                     handleSelectCity(cityId);
                     setCurrentTab('city');
                   }}
+                  onOpenPrint={() => setIsPrintOpen(true)}
                 />
               )}
 
@@ -606,35 +663,35 @@ export default function App() {
           )}
         </main>
 
-        {/* Global Footer in Outcrowd Resq.io incident management telemetry style */}
-        <footer className="border-t border-slate-800/80 bg-[#070814]/90 backdrop-blur-md px-4 py-4 text-center text-xs text-slate-400">
+        {/* Global Footer in CS2 Esports style */}
+        <footer className="border-t border-[#222533] bg-[#10121A] px-4 py-4 text-center text-xs text-slate-400">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-white tracking-tight">StudyQuest</span>
-              <span className="text-[#0A26E6] font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#0A26E6]/15 border border-[#0A26E6]/30">
-                Resq Incident System
+              <span className="font-black text-white tracking-tight">STUDY</span>
+              <span className="text-emerald-400 font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 font-bold uppercase">
+                Esports & Academy
               </span>
               <span className="text-slate-600">·</span>
-              <span className="text-slate-400">Plan d'Opérations Scolaires & Sommet Alpin</span>
+              <span className="text-slate-400">Saison 1 : Expédition des Rangs</span>
             </div>
 
             <div className="flex items-center gap-2.5 text-slate-400 font-medium flex-wrap justify-center text-[11px] font-mono">
+              <span className="text-emerald-400">🇳🇱 Néerlandais</span>
+              <span className="text-slate-700">·</span>
               <span className="text-cyan-400">Français</span>
               <span className="text-slate-700">·</span>
               <span className="text-emerald-400">Sciences</span>
               <span className="text-slate-700">·</span>
-              <span className="text-blue-400">Mathématiques</span>
+              <span className="text-blue-400">Maths</span>
               <span className="text-slate-700">·</span>
-              <span className="text-amber-400">Histoire</span>
+              <span className="text-purple-400">Histoire</span>
               <span className="text-slate-700">·</span>
-              <span className="text-indigo-400">Langues</span>
-              <span className="text-slate-700">·</span>
-              <span className="text-teal-400">Numérique</span>
+              <span className="text-teal-400">Code</span>
             </div>
 
-            <div className="font-mono text-[10px] text-emerald-400 flex items-center gap-1.5">
+            <div className="font-mono text-[10px] text-emerald-400 flex items-center gap-1.5 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Système synchronisé en continu</span>
+              <span>Saison 1 Active</span>
             </div>
           </div>
         </footer>
@@ -729,6 +786,66 @@ export default function App() {
         cities={CITIES_BY_SUBJECT}
         onCompleteHomeworkBonus={(bricks) => {
           addArchipelagoXp(30, bricks, 5);
+        }}
+      />
+
+      {/* European Diplomatic Passport Modal */}
+      <EuropeanPassportModal
+        isOpen={isPassportOpen}
+        onClose={() => setIsPassportOpen(false)}
+        archipelago={archipelago}
+        cities={CITIES_BY_SUBJECT}
+      />
+
+      {/* Printable Pocket Flashcards Sheet Modal */}
+      <PrintFlashcardsModal
+        isOpen={isPrintOpen}
+        onClose={() => setIsPrintOpen(false)}
+      />
+
+      {/* 1-Minute Live Demo Video Tour Modal */}
+      <VideoDemoModal
+        isOpen={isVideoDemoOpen}
+        onClose={() => setIsVideoDemoOpen(false)}
+        onStartChallenge={() => {
+          if (challenges.length > 0) {
+            setActiveChallenge(challenges[0]);
+          }
+        }}
+        onOpenMiniGames={() => setIsMiniGamesOpen(true)}
+        onOpenCertificate={() => setIsCertificateOpen(true)}
+      />
+
+      {/* Esport Duel 1v1 Modal */}
+      <EsportDuelModal
+        isOpen={isDuelOpen}
+        onClose={() => setIsDuelOpen(false)}
+        onEarnRewards={(bricks, xp) => {
+          addArchipelagoXp(xp, bricks, 10);
+        }}
+      />
+
+      {/* CS2 Case Opening & Skins Modal */}
+      <Cs2CaseOpeningModal
+        isOpen={isCasesOpen}
+        onClose={() => setIsCasesOpen(false)}
+        bricks={archipelago.bricks}
+        onSpendBricks={(amount) => {
+          if (archipelago.bricks < amount) return false;
+          setArchipelago((prev) => ({
+            ...prev,
+            bricks: prev.bricks - amount,
+          }));
+          return true;
+        }}
+      />
+
+      {/* Voice Challenge & Speech Recognition Modal */}
+      <VoiceChallengeModal
+        isOpen={isVoiceOpen}
+        onClose={() => setIsVoiceOpen(false)}
+        onEarnRewards={(bricks, xp) => {
+          addArchipelagoXp(xp, bricks, 10);
         }}
       />
     </div>

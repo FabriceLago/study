@@ -124,7 +124,7 @@ export const ChallengesHub: React.FC<ChallengesHubProps> = ({
                       </span>
                     )}
                     {chal.language === 'nl' && (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
                         🇳🇱 Néerlandais
                       </span>
                     )}
@@ -179,7 +179,7 @@ export const ChallengesHub: React.FC<ChallengesHubProps> = ({
               {/* Footer */}
               <div className="pt-3.5 border-t border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-3 text-xs font-mono">
-                  <span className="text-amber-400 font-bold">+{chal.rewardBricks} 🧱</span>
+                  <span className="text-emerald-400 font-bold">+{chal.rewardBricks} 🧱</span>
                   <span className="text-cyan-400 font-bold">+{chal.rewardFlowers} 🌸</span>
                   <span className="text-indigo-300 font-bold">+{chal.rewardXp} XP</span>
                 </div>

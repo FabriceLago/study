@@ -145,7 +145,7 @@ const MENTORS: Mentor[] = [
     role: 'Grand Humaniste, Polyglotte & Éducateur',
     subject: 'Langues & Néerlandais (Nederlands)',
     avatar: '🌷',
-    color: 'from-amber-500 to-orange-700',
+    color: 'from-emerald-500 to-teal-700',
     greeting:
       '« Welkom, jonge ontdekker ! Né à Rotterdam, j’ai voyagé dans toute l’Europe en parlant néerlandais, français, anglais et latin. Apprendre les langues, c’est bâtir des ponts d’amitié entre les peuples ! »',
     presetQuestions: [

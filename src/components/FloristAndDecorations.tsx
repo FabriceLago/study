@@ -32,7 +32,7 @@ export const FloristAndDecorations: React.FC<FloristAndDecorationsProps> = ({
       case 'Bike':
         return <Bike className="w-5 h-5 text-emerald-500" />;
       case 'Lamp':
-        return <Lamp className="w-5 h-5 text-amber-500" />;
+        return <Lamp className="w-5 h-5 text-emerald-400" />;
       case 'Cat':
         return <Cat className="w-5 h-5 text-pink-500" />;
       case 'Feather':
@@ -68,7 +68,7 @@ export const FloristAndDecorations: React.FC<FloristAndDecorationsProps> = ({
                 <span>🌸</span>
                 <span>{city.flowers} Fleurs en réserve</span>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 border border-amber-500/30 text-xs font-mono font-bold text-amber-300 shadow-sm">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-950/80 border border-emerald-500/30 text-xs font-mono font-bold text-emerald-300 shadow-sm">
                 <span>💎</span>
                 <span>{city.gems} Joyaux célestes</span>
               </div>
@@ -129,7 +129,7 @@ export const FloristAndDecorations: React.FC<FloristAndDecorationsProps> = ({
                   <div className="flex items-center gap-2 text-xs font-mono">
                     <span className="text-pink-300 font-bold">🌸 {item.costFlowers}</span>
                     {item.costGems > 0 && (
-                      <span className="text-amber-300 font-bold">💎 {item.costGems}</span>
+                      <span className="text-emerald-300 font-bold">💎 {item.costGems}</span>
                     )}
                   </div>
 

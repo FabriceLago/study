@@ -265,7 +265,7 @@ export const HomeworkPlannerModal: React.FC<HomeworkPlannerModalProps> = ({
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[11px] font-mono font-bold text-amber-300 bg-amber-950/40 px-2 py-0.5 rounded-full border border-amber-500/30">
+                    <span className="text-[11px] font-mono font-bold text-emerald-300 bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-500/30">
                       +{item.rewardBricks} 🧱
                     </span>
                     <button

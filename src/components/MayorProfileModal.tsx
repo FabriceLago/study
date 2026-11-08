@@ -143,7 +143,7 @@ export const MayorProfileModal: React.FC<MayorProfileModalProps> = ({
               <span>·</span>
               <span className="text-pink-400 font-semibold">{totalArchipelagoPopulation} citoyennes</span>
               <span>·</span>
-              <span className="text-amber-400 font-semibold">{archipelago.bricks} briques d’or</span>
+              <span className="text-emerald-400 font-semibold">{archipelago.bricks} briques d’or</span>
               <span>·</span>
               <span className="text-rose-400 font-semibold">{archipelago.flowers} fleurs</span>
             </div>

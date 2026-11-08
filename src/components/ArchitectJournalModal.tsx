@@ -300,7 +300,7 @@ export const ArchitectJournalModal: React.FC<ArchitectJournalModalProps> = ({
                     </div>
 
                     {/* Memory Trick */}
-                    <div className="text-xs text-amber-200 bg-amber-950/40 p-2.5 rounded-xl border border-amber-500/30">
+                    <div className="text-xs text-emerald-200 bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-500/30">
                       {rule.memoryTrick}
                     </div>
                   </div>

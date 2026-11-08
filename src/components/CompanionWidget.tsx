@@ -220,7 +220,7 @@ export const CompanionWidget: React.FC<CompanionWidgetProps> = ({
           soundEngine.playClick();
           setIsBubbleOpen((prev) => !prev);
         }}
-        className="flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-pink-500 text-slate-950 font-bold shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all border-2 border-white group"
+        className="flex items-center gap-2 p-2 sm:px-3 sm:py-2 rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-bold shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all border-2 border-white group"
         title="Ouvrir les conseils de ton animal compagnon"
       >
         <span className="text-2xl group-hover:scale-120 group-hover:rotate-6 transition-transform">
@@ -230,7 +230,7 @@ export const CompanionWidget: React.FC<CompanionWidgetProps> = ({
           <span className="text-xs font-bold font-editorial text-white drop-shadow-xs">
             {pet.name}
           </span>
-          <span className="text-[10px] text-amber-100 font-sans font-medium">
+          <span className="text-[10px] text-emerald-100 font-sans font-medium">
             Compagnon ({petAffection}%)
           </span>
         </div>

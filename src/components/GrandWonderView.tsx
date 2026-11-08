@@ -98,8 +98,8 @@ export const GrandWonderView: React.FC<GrandWonderViewProps> = ({
                 className="w-full h-full object-cover select-none"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-bold text-purple-300 border border-purple-500/30 shadow-xs flex items-center gap-1">
-                <Crown className="w-3 h-3 text-amber-400" />
+              <div className="absolute top-2 left-2 bg-slate-950/80 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-bold text-emerald-300 border border-emerald-500/30 shadow-xs flex items-center gap-1">
+                <Crown className="w-3 h-3 text-emerald-400" />
                 <span>Merveille Céleste</span>
               </div>
             </div>
@@ -107,7 +107,7 @@ export const GrandWonderView: React.FC<GrandWonderViewProps> = ({
 
           <div className="md:col-span-7 space-y-3 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2 text-xs font-semibold text-purple-400 uppercase tracking-wider">
-              <Sparkles className="w-4 h-4 text-pink-400" />
+              <Sparkles className="w-4 h-4 text-emerald-400" />
               <span>Chantier d’Excellence Impériale</span>
             </div>
 
@@ -123,13 +123,13 @@ export const GrandWonderView: React.FC<GrandWonderViewProps> = ({
             <div className="space-y-1.5 pt-2">
               <div className="flex justify-between text-xs font-mono">
                 <span className="text-slate-400 font-medium">Édification Céleste</span>
-                <span className="text-purple-300 font-bold tabular-nums">
+                <span className="text-emerald-300 font-bold tabular-nums">
                   {progressPercent}% complet
                 </span>
               </div>
-              <div className="w-full h-3 bg-purple-950/60 border border-purple-500/30 rounded-full overflow-hidden">
+              <div className="w-full h-3 bg-slate-950/60 border border-emerald-500/30 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 transition-all duration-500 shadow-sm"
+                  className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-emerald-300 transition-all duration-500 shadow-sm"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -157,7 +157,7 @@ export const GrandWonderView: React.FC<GrandWonderViewProps> = ({
                 <Volume2 className="w-4 h-4 text-purple-400" />
                 <span>Écouter</span>
               </button>
-              <span className="text-amber-300 font-mono">
+              <span className="text-emerald-300 font-mono">
                 +{currentQ.bricks} 🧱
               </span>
             </div>
@@ -271,13 +271,13 @@ export const GrandWonderView: React.FC<GrandWonderViewProps> = ({
             </div>
             <div>
               <div className="text-[11px] text-slate-400">Briques Dorées</div>
-              <div className="text-base sm:text-lg font-bold font-mono text-amber-300">
+              <div className="text-base sm:text-lg font-bold font-mono text-emerald-300">
                 +{wonderChallenge.rewardBricks} 🧱
               </div>
             </div>
             <div>
               <div className="text-[11px] text-slate-400">Fleurs Recueillies</div>
-              <div className="text-base sm:text-lg font-bold font-mono text-pink-300">
+              <div className="text-base sm:text-lg font-bold font-mono text-teal-300">
                 +{wonderChallenge.rewardFlowers} 🌸
               </div>
             </div>
@@ -295,7 +295,7 @@ export const GrandWonderView: React.FC<GrandWonderViewProps> = ({
                   totalCount: wonderChallenge.questions.length,
                 });
               }}
-              className="px-6 py-2.5 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-90 rounded-xl shadow-lg transition-transform active:scale-95"
+              className="px-6 py-2.5 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-teal-600 via-emerald-600 to-emerald-500 hover:opacity-90 rounded-xl shadow-lg transition-transform active:scale-95"
             >
               Inscrire la Merveille dans les Annales
             </button>

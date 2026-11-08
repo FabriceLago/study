@@ -34,7 +34,7 @@ export const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
 
   const tutorialSteps = [
     {
-      title: 'Bienvenue sur StudyQuest ! 🏔️',
+      title: 'Bienvenue sur Study ! 🏔️',
       badge: 'Guide des 10 ans',
       emoji: '🌸',
       description:
@@ -107,7 +107,7 @@ export const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
       >
         <span className="text-lg group-hover:rotate-12 transition-transform">👩‍🎨</span>
         <span className="font-editorial">Guide des Savoirs</span>
-        <span className="w-2 h-2 rounded-full bg-amber-300 animate-ping" />
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
       </button>
 
       {/* Guide Modal */}
@@ -144,7 +144,7 @@ export const InteractiveGuide: React.FC<InteractiveGuideProps> = ({
                   <Sparkles className="w-4 h-4 text-rose-400" />
                   <span>Ta Mission du Jour (Spéciale 10 ans)</span>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/20 border border-amber-400/30 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/20 border border-emerald-400/30 px-2 py-0.5 rounded-full">
                   +60 🧱 & +30 🌸
                 </span>
               </div>

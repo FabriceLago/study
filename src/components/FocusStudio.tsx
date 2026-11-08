@@ -118,10 +118,10 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-2xl sm:text-3xl font-bold font-editorial text-white">
+        <h2 className="text-2xl sm:text-3xl font-bold font-editorial text-slate-900 dark:text-white">
           L’Atelier de Concentration & Thé
         </h2>
-        <p className="text-xs sm:text-sm text-purple-200/80 max-w-md mx-auto">
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-purple-200/80 max-w-md mx-auto">
           Installez-vous confortablement avec votre thé préféré. Chaque minute de lecture ou de devoirs nourrit les jardins de votre cité.
         </p>
       </div>
@@ -140,7 +140,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors ${
               selectedDuration === preset.duration
                 ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md'
-                : 'bg-[#121432] border border-purple-500/30 text-purple-200 hover:text-white hover:border-purple-400'
+                : 'bg-white dark:bg-[#121432] border border-slate-200 dark:border-purple-500/30 text-slate-700 dark:text-purple-200 hover:text-slate-950 dark:hover:text-white hover:border-slate-300 dark:hover:border-purple-400'
             }`}
           >
             {preset.label}
@@ -149,7 +149,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
       </div>
 
       {/* Clock Card */}
-      <div className="relative rounded-3xl border border-purple-500/30 bg-[#0d0e22]/95 p-8 text-center shadow-2xl backdrop-blur-md overflow-hidden">
+      <div className="relative rounded-3xl border border-slate-200 dark:border-purple-500/30 bg-white/95 dark:bg-[#0d0e22]/95 p-8 text-center shadow-xl dark:shadow-2xl backdrop-blur-md overflow-hidden">
         <div className="relative z-10 flex flex-col items-center">
           <div className="relative w-56 h-56 flex items-center justify-center my-3">
             <svg className="w-full h-full transform -rotate-90">
@@ -157,7 +157,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
                 cx="112"
                 cy="112"
                 r="96"
-                className="stroke-purple-950/60"
+                className="stroke-slate-200 dark:stroke-purple-950/60"
                 strokeWidth="8"
                 fill="none"
               />
@@ -165,7 +165,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
                 cx="112"
                 cy="112"
                 r="96"
-                className="stroke-rose-400 transition-all duration-1000 ease-linear"
+                className="stroke-rose-500 dark:stroke-rose-400 transition-all duration-1000 ease-linear"
                 strokeWidth="8"
                 strokeDasharray={2 * Math.PI * 96}
                 strokeDashoffset={2 * Math.PI * 96 * (1 - progressPercent / 100)}
@@ -176,27 +176,27 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
 
             <div className="absolute flex flex-col items-center justify-center space-y-1">
               <Coffee
-                className={`w-6 h-6 text-rose-400 ${
+                className={`w-6 h-6 text-rose-500 dark:text-rose-400 ${
                   isActive ? 'animate-bounce' : ''
                 }`}
               />
-              <div className="text-4xl sm:text-5xl font-mono font-bold text-white tracking-wider tabular-nums">
+              <div className="text-4xl sm:text-5xl font-mono font-bold text-slate-900 dark:text-white tracking-wider tabular-nums">
                 {formatTime(timeLeft)}
               </div>
-              <div className="text-[11px] text-pink-300 font-medium">
+              <div className="text-[11px] text-pink-600 dark:text-pink-300 font-medium">
                 {isActive ? 'Concentration en cours ☕' : 'En pause détente'}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-6 text-xs text-slate-300 font-mono pt-2">
-            <div className="flex items-center gap-1.5 text-pink-400">
+          <div className="flex items-center gap-6 text-xs text-slate-600 dark:text-slate-300 font-mono pt-2">
+            <div className="flex items-center gap-1.5 text-pink-600 dark:text-pink-400">
               <Flower2 className="w-4 h-4" />
               <span>+{accumulatedFlowers} fleurs écloses</span>
             </div>
-            <div className="flex items-center gap-1.5 text-amber-300">
-              <span>🧱</span>
-              <span>+{Math.round(selectedDuration / 60)} briques à la clé</span>
+            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span>🪙</span>
+              <span>+{Math.round(selectedDuration / 60)} pièces à la clé</span>
             </div>
           </div>
 
@@ -212,7 +212,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
             ) : (
               <button
                 onClick={handlePause}
-                className="flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-semibold text-purple-200 bg-purple-900/60 hover:bg-purple-800/70 border border-purple-500/30 rounded-full transition-colors active:scale-95"
+                className="flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-semibold text-purple-900 dark:text-purple-200 bg-purple-100 dark:bg-purple-900/60 hover:bg-purple-200 dark:hover:bg-purple-800/70 border border-purple-300 dark:border-purple-500/30 rounded-full transition-colors active:scale-95"
               >
                 <Pause className="w-4 h-4 fill-current" />
                 <span>Faire une Pause</span>
@@ -221,7 +221,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
 
             <button
               onClick={() => handleReset()}
-              className="p-2.5 rounded-full bg-[#121432] border border-purple-500/30 text-purple-300 hover:text-white transition-colors"
+              className="p-2.5 rounded-full bg-slate-100 dark:bg-[#121432] border border-slate-200 dark:border-purple-500/30 text-slate-600 dark:text-purple-300 hover:text-slate-950 dark:hover:text-white transition-colors"
               title="Réinitialiser le sablier"
             >
               <RotateCcw className="w-4 h-4" />
@@ -231,13 +231,13 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({ onEarnFocusRewards }) 
               onClick={handleToggleAmbient}
               className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-full border transition-colors ${
                 isAmbientActive
-                  ? 'bg-purple-900/60 text-purple-200 border-purple-400'
-                  : 'bg-[#121432] border-purple-500/30 text-purple-200 hover:text-white'
+                  ? 'bg-purple-100 dark:bg-purple-900/60 text-purple-900 dark:text-purple-200 border-purple-400'
+                  : 'bg-slate-100 dark:bg-[#121432] border-slate-200 dark:border-purple-500/30 text-slate-700 dark:text-purple-200 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               {isAmbientActive ? (
                 <>
-                  <Volume2 className="w-3.5 h-3.5 text-rose-400" />
+                  <Volume2 className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
                   <span>Mélodie Lofi Active</span>
                 </>
               ) : (
