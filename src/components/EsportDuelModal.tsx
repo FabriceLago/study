@@ -16,10 +16,14 @@ import { soundEngine } from '../utils/audio';
 import { speechHelper } from '../utils/speech';
 import { useLanguage } from '../utils/i18n';
 
+import { StudyLanguage } from '../types/game';
+
 interface EsportDuelModalProps {
   isOpen: boolean;
   onClose: () => void;
   onEarnRewards: (bricks: number, xp: number) => void;
+  selectedStudyLanguage?: StudyLanguage;
+  onSelectStudyLanguage?: (lang: StudyLanguage) => void;
 }
 
 interface DuelQuestion {
@@ -31,6 +35,7 @@ interface DuelQuestion {
   correctIndex: number;
   explanation: string;
   langVoice?: string;
+  lang?: StudyLanguage | 'math' | 'science';
 }
 
 const DUEL_QUESTIONS: DuelQuestion[] = [
@@ -43,6 +48,7 @@ const DUEL_QUESTIONS: DuelQuestion[] = [
     correctIndex: 0,
     explanation: '« Goedemorgen » est le salut chaleureux du matin en néerlandais.',
     langVoice: 'nl-NL',
+    lang: 'nl',
   },
   {
     id: 'dq_2',
@@ -52,6 +58,7 @@ const DUEL_QUESTIONS: DuelQuestion[] = [
     options: ['54', '56', '58', '64'],
     correctIndex: 1,
     explanation: '8 × 7 = 56. Une table fondamentale en calcul mental !',
+    lang: 'math',
   },
   {
     id: 'dq_3',
@@ -62,6 +69,7 @@ const DUEL_QUESTIONS: DuelQuestion[] = [
     correctIndex: 1,
     explanation: '« Dank je wel » signifie merci beaucoup / je te remercie.',
     langVoice: 'nl-NL',
+    lang: 'nl',
   },
   {
     id: 'dq_4',
@@ -71,6 +79,7 @@ const DUEL_QUESTIONS: DuelQuestion[] = [
     options: ['brillé', 'brillés', 'brillées', 'briller'],
     correctIndex: 0,
     explanation: 'Avec l’auxiliaire avoir sans COD placé avant, le participe passé ne s’accorde pas.',
+    lang: 'fr',
   },
   {
     id: 'dq_5',
@@ -81,6 +90,7 @@ const DUEL_QUESTIONS: DuelQuestion[] = [
     correctIndex: 1,
     explanation: '« Bridge » désigne un pont qui relie les deux rives d’une cité.',
     langVoice: 'en-US',
+    lang: 'en',
   },
   {
     id: 'dq_6',
@@ -91,6 +101,40 @@ const DUEL_QUESTIONS: DuelQuestion[] = [
     correctIndex: 2,
     explanation: '« Groen » signifie Vert (comme notre émeraude) !',
     langVoice: 'nl-NL',
+    lang: 'nl',
+  },
+  {
+    id: 'dq_es_1',
+    category: 'Espagnol · Saludos',
+    flag: '🇪🇸',
+    question: 'Que signifie « ¡Buenos días! » ?',
+    options: ['Bonjour (le matin)', 'Bonne nuit', 'À demain', 'S’il te plaît'],
+    correctIndex: 0,
+    explanation: '« ¡Buenos días! » est la salutation chaleureuse matinale en espagnol.',
+    langVoice: 'es-ES',
+    lang: 'es',
+  },
+  {
+    id: 'dq_es_2',
+    category: 'Espagnol · Cortesía',
+    flag: '🇪🇸',
+    question: 'Comment dit-on « S’il vous plaît » en espagnol ?',
+    options: ['Por favor', 'Muchas gracias', 'De nada', 'Hasta luego'],
+    correctIndex: 0,
+    explanation: '« Por favor » est la formule de politesse essentielle.',
+    langVoice: 'es-ES',
+    lang: 'es',
+  },
+  {
+    id: 'dq_en_2',
+    category: 'Anglais · Expressions',
+    flag: '🇬🇧',
+    question: 'Que signifie « A piece of cake » ?',
+    options: ['C’est un jeu d’enfant', 'C’est une part de gâteau', 'C’est très difficile', 'C’est cher'],
+    correctIndex: 0,
+    explanation: '« A piece of cake » est l’équivalent anglais de « c’est du gâteau ».',
+    langVoice: 'en-US',
+    lang: 'en',
   },
 ];
 
@@ -105,10 +149,13 @@ export const EsportDuelModal: React.FC<EsportDuelModalProps> = ({
   isOpen,
   onClose,
   onEarnRewards,
+  selectedStudyLanguage = 'nl',
+  onSelectStudyLanguage,
 }) => {
   const { t } = useLanguage();
   const [gameState, setGameState] = useState<'matchmaking' | 'playing' | 'gameover'>('matchmaking');
   const [selectedRival, setSelectedRival] = useState(BOT_RIVALS[0]);
+  const [duelLangFocus, setDuelLangFocus] = useState<StudyLanguage | 'mix'>(selectedStudyLanguage);
   const [currentRound, setCurrentRound] = useState(0);
   const [playerScore, setPlayerScore] = useState(0);
   const [botScore, setBotScore] = useState(0);
@@ -116,44 +163,32 @@ export const EsportDuelModal: React.FC<EsportDuelModalProps> = ({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [botSelectedOption, setBotSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [matchmakingProgress, setMatchmakingProgress] = useState(0);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Matchmaking simulation
-  useEffect(() => {
-    if (!isOpen) {
-      setGameState('matchmaking');
-      return;
+  const activeQuestions = React.useMemo(() => {
+    if (duelLangFocus === 'mix') return DUEL_QUESTIONS;
+    const matched = DUEL_QUESTIONS.filter((q) => q.lang === duelLangFocus);
+    if (matched.length < 5) {
+      const fillers = DUEL_QUESTIONS.filter((q) => q.lang !== duelLangFocus);
+      return [...matched, ...fillers].slice(0, 5);
     }
+    return matched;
+  }, [duelLangFocus]);
 
-    if (gameState === 'matchmaking') {
-      const rival = BOT_RIVALS[Math.floor(Math.random() * BOT_RIVALS.length)];
-      setSelectedRival(rival);
-      setMatchmakingProgress(0);
-
-      const interval = setInterval(() => {
-        setMatchmakingProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            soundEngine.playSuccess();
-            setGameState('playing');
-            setCurrentRound(0);
-            setPlayerScore(0);
-            setBotScore(0);
-            setTimer(10);
-            setSelectedOption(null);
-            setBotSelectedOption(null);
-            setIsAnswered(false);
-            return 100;
-          }
-          return prev + 25;
-        });
-      }, 400);
-
-      return () => clearInterval(interval);
-    }
-  }, [isOpen, gameState]);
+  // Lobby setup
+  const handleStartDuel = (rival = selectedRival) => {
+    setSelectedRival(rival);
+    soundEngine.playSuccess();
+    setGameState('playing');
+    setCurrentRound(0);
+    setPlayerScore(0);
+    setBotScore(0);
+    setTimer(10);
+    setSelectedOption(null);
+    setBotSelectedOption(null);
+    setIsAnswered(false);
+  };
 
   // Round Timer & Bot simulated behavior
   useEffect(() => {
@@ -174,7 +209,7 @@ export const EsportDuelModal: React.FC<EsportDuelModalProps> = ({
     const botThinkingTime = Math.random() * 2500 + 1800;
     const botTimer = setTimeout(() => {
       if (!isAnswered) {
-        const currentQ = DUEL_QUESTIONS[currentRound % DUEL_QUESTIONS.length];
+        const currentQ = activeQuestions[currentRound % activeQuestions.length];
         // 80% accuracy for bot
         const botCorrect = Math.random() < 0.82;
         const botPick = botCorrect
@@ -191,7 +226,7 @@ export const EsportDuelModal: React.FC<EsportDuelModalProps> = ({
       if (timerRef.current) clearInterval(timerRef.current);
       clearTimeout(botTimer);
     };
-  }, [gameState, currentRound, isAnswered]);
+  }, [gameState, currentRound, isAnswered, activeQuestions]);
 
   const handleTimeExpired = () => {
     setIsAnswered(true);
@@ -202,7 +237,7 @@ export const EsportDuelModal: React.FC<EsportDuelModalProps> = ({
   const handleSelectAnswer = (index: number) => {
     if (isAnswered) return;
 
-    const currentQ = DUEL_QUESTIONS[currentRound % DUEL_QUESTIONS.length];
+    const currentQ = activeQuestions[currentRound % activeQuestions.length];
     const isCorrect = index === currentQ.correctIndex;
     setSelectedOption(index);
     setIsAnswered(true);
@@ -241,7 +276,7 @@ export const EsportDuelModal: React.FC<EsportDuelModalProps> = ({
 
   if (!isOpen) return null;
 
-  const currentQ = DUEL_QUESTIONS[currentRound % DUEL_QUESTIONS.length];
+  const currentQ = activeQuestions[currentRound % activeQuestions.length];
   const totalScore = playerScore + botScore || 1;
   const playerPercent = Math.min(90, Math.max(10, (playerScore / totalScore) * 100));
 
@@ -284,31 +319,106 @@ export const EsportDuelModal: React.FC<EsportDuelModalProps> = ({
 
         {/* Content Body */}
         <div className="p-5 sm:p-6 overflow-y-auto flex-1 bg-[#090b14]">
-          {/* STATE 1: MATCHMAKING SEARCH */}
+          {/* STATE 1: HONEST TRAINING LOBBY */}
           {gameState === 'matchmaking' && (
-            <div className="py-12 text-center space-y-6">
-              <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 border-2 border-emerald-400 flex items-center justify-center text-4xl animate-pulse shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-                <Swords className="w-10 h-10 text-emerald-400 animate-spin" style={{ animationDuration: '4s' }} />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-xl font-black text-white uppercase font-sans">
-                  Recherche d'un Adversaire en Direct...
+            <div className="py-6 space-y-6">
+              <div className="text-center space-y-2">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                  ⚔️
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-white uppercase font-sans">
+                  Duel 1v1 d'Entraînement Académique
                 </h3>
-                <p className="text-xs text-slate-400 font-mono">
-                  Scan du serveur · MMR estimé : 1400 Elo
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  Affrontez une IA d'entraînement en 5 questions rapides (vocabulaire néerlandais, calculs éclairs, français, anglais).
                 </p>
               </div>
 
-              <div className="max-w-xs mx-auto w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
-                <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300"
-                  style={{ width: `${matchmakingProgress}%` }}
-                />
+              {/* Language Focus Selection */}
+              <div className="space-y-2">
+                <div className="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-bold px-1 flex items-center justify-between">
+                  <span>Choisir la langue d'étude du duel :</span>
+                  <span className="text-[10px] text-slate-400 font-normal">5 questions chrono</span>
+                </div>
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                  {[
+                    { id: 'nl' as StudyLanguage, label: 'Néerlandais', flag: '🇳🇱' },
+                    { id: 'en' as StudyLanguage, label: 'Anglais', flag: '🇬🇧' },
+                    { id: 'es' as StudyLanguage, label: 'Espagnol', flag: '🇪🇸' },
+                    { id: 'fr' as StudyLanguage, label: 'Français', flag: '🇫🇷' },
+                    { id: 'mix' as const, label: 'Mixte Émeraude', flag: '🎲' },
+                  ].map((item) => {
+                    const isSelected = duelLangFocus === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          soundEngine.playClick();
+                          setDuelLangFocus(item.id);
+                          if (item.id !== 'mix') {
+                            onSelectStudyLanguage?.(item.id);
+                          }
+                        }}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 border ${
+                          isSelected
+                            ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-102'
+                            : 'bg-[#111422] border-[#222538] text-slate-400 hover:text-white hover:border-emerald-500/50'
+                        }`}
+                      >
+                        <span>{item.flag}</span>
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div className="text-[11px] font-mono text-emerald-400">
-                Adversaire trouvé : {selectedRival.name} ({selectedRival.rank})
+              {/* Bot Rival Selection Cards */}
+              <div className="space-y-2">
+                <div className="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-bold px-1">
+                  Sélectionnez votre adversaire d'entraînement :
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {BOT_RIVALS.map((rival) => {
+                    const isSelected = selectedRival.name === rival.name;
+                    return (
+                      <button
+                        key={rival.name}
+                        onClick={() => {
+                          soundEngine.playClick();
+                          setSelectedRival(rival);
+                        }}
+                        className={`p-3 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${
+                          isSelected
+                            ? 'bg-emerald-950/60 border-emerald-400 text-white shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                            : 'bg-[#111422] border-[#222536] hover:border-emerald-500/50 text-slate-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="text-2xl shrink-0">{rival.avatar}</span>
+                          <div className="min-w-0">
+                            <div className="font-bold text-xs truncate text-white">{rival.name}</div>
+                            <div className="text-[10px] text-emerald-400 font-mono">{rival.rank}</div>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold shrink-0">
+                          {rival.elo} Elo
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="text-center pt-2">
+                <button
+                  onClick={() => handleStartDuel(selectedRival)}
+                  className="px-8 py-3 bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-black text-sm uppercase tracking-wider rounded-xl shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-2"
+                >
+                  <Swords className="w-4 h-4" />
+                  <span>Lancer le Match contre {selectedRival.name}</span>
+                </button>
               </div>
             </div>
           )}

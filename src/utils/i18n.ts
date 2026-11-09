@@ -114,8 +114,10 @@ export interface TranslationDictionary {
   coins: string;
   bricks: string;
   flowers: string;
-  liveDrops: string;
+  activeMission: string;
   season1: string;
+  studyTargetLang: string;
+  chooseStudyLang: string;
 }
 
 export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
@@ -181,8 +183,10 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     coins: 'Pièces',
     bricks: 'Briques Dorées',
     flowers: 'Fleurs',
-    liveDrops: 'Live Drops',
+    activeMission: 'Mission Active',
     season1: 'Saison 1',
+    studyTargetLang: 'Langue d’Étude',
+    chooseStudyLang: 'Choisir la langue à étudier',
   },
   nl: {
     appName: 'Study',
@@ -246,8 +250,10 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     coins: 'Munten',
     bricks: 'Gouden Bakstenen',
     flowers: 'Bloemen',
-    liveDrops: 'Live Drops',
+    activeMission: 'Actieve Missie',
     season1: 'Seizoen 1',
+    studyTargetLang: 'Studietaal',
+    chooseStudyLang: 'Kies de taal om te studeren',
   },
   en: {
     appName: 'Study',
@@ -311,8 +317,10 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     coins: 'Coins',
     bricks: 'Golden Bricks',
     flowers: 'Flowers',
-    liveDrops: 'Live Drops',
+    activeMission: 'Active Mission',
     season1: 'Season 1',
+    studyTargetLang: 'Study Language',
+    chooseStudyLang: 'Choose language to study',
   },
   es: {
     appName: 'Study',
@@ -376,8 +384,10 @@ export const TRANSLATIONS: Record<StudyLanguage, TranslationDictionary> = {
     coins: 'Monedas',
     bricks: 'Ladrillos Dorados',
     flowers: 'Flores',
-    liveDrops: 'Live Drops',
+    activeMission: 'Misión Activa',
     season1: 'Temporada 1',
+    studyTargetLang: 'Idioma de Estudio',
+    chooseStudyLang: 'Elegir el idioma para estudiar',
   },
 };
 

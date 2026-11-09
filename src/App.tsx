@@ -18,6 +18,7 @@ import {
   DecorationItem,
   Flashcard,
   AmbientTimeOfDay,
+  StudyLanguage,
 } from './types/game';
 import { Sidebar, PlatformTab } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
@@ -50,7 +51,21 @@ export default function App() {
   const [archipelago, setArchipelago] = useState<ArchipelagoStats>(() => {
     try {
       const saved = localStorage.getItem('studyquest_v3_archipelago');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: ArchipelagoStats = JSON.parse(saved);
+        // Purge fictional name 'Lina' if present
+        if (parsed.mayorName === 'Lina') {
+          parsed.mayorName = 'Élève';
+        }
+        // Purge fictional starter balances if no real challenges were completed
+        if (parsed.completedChallengeIds?.length === 0) {
+          if (parsed.bricks === 70) parsed.bricks = 0;
+          if (parsed.flowers === 45) parsed.flowers = 0;
+          if (parsed.gems === 2) parsed.gems = 0;
+          if (parsed.streakDays === 1) parsed.streakDays = 0;
+        }
+        return parsed;
+      }
     } catch {}
     return DEFAULT_ARCHIPELAGO_STATS;
   });
@@ -124,6 +139,21 @@ export default function App() {
   const [isDuelOpen, setIsDuelOpen] = useState(false);
   const [isCasesOpen, setIsCasesOpen] = useState(false);
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [studyLanguage, setStudyLanguage] = useState<StudyLanguage>(() => {
+    try {
+      const saved = localStorage.getItem('study_target_language');
+      if (saved === 'nl' || saved === 'en' || saved === 'es' || saved === 'fr') return saved;
+    } catch {}
+    return 'nl';
+  });
+
+  const handleSelectStudyLanguage = (lang: StudyLanguage) => {
+    setStudyLanguage(lang);
+    try {
+      localStorage.setItem('study_target_language', lang);
+    } catch {}
+  };
+
   const [timeOfDay, setTimeOfDay] = useState<AmbientTimeOfDay>('dusk');
   const [isMuted, setIsMuted] = useState(() => soundEngine.isMuted());
   const [searchQuery, setSearchQuery] = useState('');
@@ -499,6 +529,8 @@ export default function App() {
       localStorage.removeItem('studyquest_v3_buildings');
       localStorage.removeItem('studyquest_v3_challenges');
       localStorage.removeItem('studyquest_v3_flashcards');
+      localStorage.removeItem('studyquest_homework_list');
+      localStorage.removeItem('study_skins_inventory');
       localStorage.removeItem('studycity_archipelago_stats');
       localStorage.removeItem('studycity_buildings_v2');
       localStorage.removeItem('studycity_challenges_v2');
@@ -544,6 +576,8 @@ export default function App() {
           onOpenDuel={() => setIsDuelOpen(true)}
           onOpenCases={() => setIsCasesOpen(true)}
           onOpenVoice={() => setIsVoiceOpen(true)}
+          selectedStudyLanguage={studyLanguage}
+          onSelectStudyLanguage={handleSelectStudyLanguage}
         />
 
         {/* Dynamic Main Workspace View */}
@@ -617,6 +651,8 @@ export default function App() {
                   challenges={challenges}
                   cities={CITIES_BY_SUBJECT}
                   archipelago={archipelago}
+                  selectedStudyLanguage={studyLanguage}
+                  onSelectStudyLanguage={handleSelectStudyLanguage}
                   onSelectChallenge={(chal) => setActiveChallenge(chal)}
                   onOpenAiForge={() => setIsAiForgeOpen(true)}
                 />
@@ -638,6 +674,9 @@ export default function App() {
                   flashcards={flashcards}
                   cities={CITIES_BY_SUBJECT}
                   completedChallengeIds={archipelago.completedChallengeIds}
+                  streakDays={archipelago.streakDays}
+                  selectedStudyLanguage={studyLanguage}
+                  onSelectStudyLanguage={handleSelectStudyLanguage}
                   onStartStudy={(cityId) => {
                     handleSelectCity(cityId);
                     setCurrentTab('city');
@@ -820,6 +859,8 @@ export default function App() {
       <EsportDuelModal
         isOpen={isDuelOpen}
         onClose={() => setIsDuelOpen(false)}
+        selectedStudyLanguage={studyLanguage}
+        onSelectStudyLanguage={handleSelectStudyLanguage}
         onEarnRewards={(bricks, xp) => {
           addArchipelagoXp(xp, bricks, 10);
         }}
@@ -844,6 +885,8 @@ export default function App() {
       <VoiceChallengeModal
         isOpen={isVoiceOpen}
         onClose={() => setIsVoiceOpen(false)}
+        selectedStudyLanguage={studyLanguage}
+        onSelectStudyLanguage={handleSelectStudyLanguage}
         onEarnRewards={(bricks, xp) => {
           addArchipelagoXp(xp, bricks, 10);
         }}

@@ -100,8 +100,8 @@ export const AiDistrictModal: React.FC<AiDistrictModalProps> = ({
           questData.lore ||
           `Bâtissez un nouveau monument pour votre cité en validant vos connaissances sur ${topic}.`,
         foreman: {
-          name: 'Lina l’Architecte',
-          role: 'Guide Urbaine',
+          name: 'Guide d’Étude',
+          role: 'Architecte Conseil',
           avatar: '👩‍💼',
           dialogue: `« Ce nouveau bâtiment dédié à ${topic} enrichira l’archipel de nos cités ! »`,
         },

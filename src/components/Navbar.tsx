@@ -40,6 +40,8 @@ interface NavbarProps {
   onOpenDuel?: () => void;
   onOpenCases?: () => void;
   onOpenVoice?: () => void;
+  selectedStudyLanguage?: StudyLanguage;
+  onSelectStudyLanguage?: (lang: StudyLanguage) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -59,6 +61,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenDuel,
   onOpenCases,
   onOpenVoice,
+  selectedStudyLanguage = 'nl',
+  onSelectStudyLanguage,
 }) => {
   const { lang: currentLang, t, setLanguage: handleSetLang } = useLanguage();
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -79,11 +83,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
   }, [isLangMenuOpen]);
 
-  const activeLangInfo = SUPPORTED_LANGUAGES.find((l) => l.code === currentLang) || SUPPORTED_LANGUAGES[0];
+  const activeLangInfo = SUPPORTED_LANGUAGES.find((l) => l.code === (selectedStudyLanguage || currentLang)) || SUPPORTED_LANGUAGES[0];
 
   const handleSelectLanguage = (langCode: StudyLanguage) => {
     soundEngine.playClick();
     handleSetLang(langCode);
+    onSelectStudyLanguage?.(langCode);
     setIsLangMenuOpen(false);
   };
   const handleToggleSound = () => {
@@ -136,31 +141,31 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Center: CS2 Live Drops Ticker / Recent Student Victories */}
+        {/* Center: Real Player Mission & Progression Tracker (100% Authentic) */}
         <div className="hidden lg:flex flex-1 max-w-xl items-center overflow-hidden">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-[#161824] border border-slate-200 dark:border-[#262A3D] text-[11px] font-mono w-full transition-colors">
             <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider shrink-0 text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-              <span>🔥</span>
-              <span>Live Drops</span>
+              <span>🎯</span>
+              <span>{t.activeMission}</span>
             </span>
-            <div className="flex items-center gap-3 overflow-x-auto no-scrollbar whitespace-nowrap text-xs">
-              <span className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-300">
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold text-[10px] px-1 rounded bg-emerald-400/15">VERT</span>
-                <span>Het Nederlands Paviljoen</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">+75 🪙</span>
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap text-xs text-slate-700 dark:text-slate-300">
+              <span className="font-semibold text-slate-900 dark:text-white">
+                {archipelago.completedChallengeIds.length === 0
+                  ? 'Étape D1 · Bibliothèque des Grands Textes'
+                  : `${archipelago.completedChallengeIds.length}/8 Étapes franchies`}
               </span>
-              <span className="text-slate-300 dark:text-slate-600">|</span>
-              <span className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-300">
-                <span className="text-purple-600 dark:text-purple-400 font-bold text-[10px] px-1 rounded bg-purple-400/15">VIOLET</span>
-                <span>Écluses d'Amsterdam</span>
-                <span className="text-cyan-600 dark:text-cyan-400 font-semibold">+35 🪙</span>
+              <span className="text-slate-300 dark:text-slate-600">·</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                {currentCity.name}
               </span>
-              <span className="text-slate-300 dark:text-slate-600">|</span>
-              <span className="inline-flex items-center gap-1 text-slate-700 dark:text-slate-300">
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-[10px] px-1 rounded bg-blue-400/15">BLEU</span>
-                <span>L'Oreille Polyglotte</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">+50 XP</span>
-              </span>
+              {archipelago.totalCorrect > 0 && (
+                <>
+                  <span className="text-slate-300 dark:text-slate-600">·</span>
+                  <span className="text-cyan-600 dark:text-cyan-400 font-mono text-[11px]">
+                    {archipelago.totalCorrect} réponses correctes
+                  </span>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -317,7 +322,32 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* Multilingual Switcher (Néerlandais 🇳🇱, Français 🇫🇷, Anglais 🇬🇧, Espagnol 🇪🇸) */}
+          {/* Quick Study Language Selector Bar on Desktop */}
+          <div className="hidden 2xl:flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-[#161824] border border-slate-200 dark:border-[#262A3D] text-xs font-mono">
+            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 px-1.5 font-bold uppercase tracking-wider">
+              Étudier :
+            </span>
+            {SUPPORTED_LANGUAGES.map((l) => {
+              const isSelected = (selectedStudyLanguage || currentLang) === l.code;
+              return (
+                <button
+                  key={l.code}
+                  onClick={() => handleSelectLanguage(l.code)}
+                  className={`px-2 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+                    isSelected
+                      ? 'bg-emerald-500 text-slate-950 shadow-sm scale-105'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#202434]'
+                  }`}
+                  title={`Choisir d'étudier en ${l.name} (${l.description})`}
+                >
+                  <span>{l.flag}</span>
+                  <span className="text-[10px] uppercase font-bold">{l.code}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Multilingual Switcher Dropdown (Néerlandais 🇳🇱, Français 🇫🇷, Anglais 🇬🇧, Espagnol 🇪🇸) */}
           <div className="relative" ref={langMenuRef}>
             <button
               onClick={() => {
@@ -325,7 +355,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setIsLangMenuOpen((prev) => !prev);
               }}
               className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-[#161824] hover:bg-slate-200 dark:hover:bg-[#202434] border border-slate-200 dark:border-[#262A3D] hover:border-emerald-500/50 text-xs font-mono transition-all text-slate-700 dark:text-slate-200 active:scale-95"
-              title="Changer la langue d'apprentissage"
+              title="Choisir la langue d'étude et de l'interface"
               aria-label="Sélectionner la langue d'étude"
               aria-expanded={isLangMenuOpen}
             >
@@ -335,9 +365,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {isLangMenuOpen && (
-              <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-white dark:bg-[#161824] border border-slate-200 dark:border-[#2E334B] shadow-2xl p-2 z-50 space-y-1 backdrop-blur-xl animate-fadeIn">
+              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#161824] border border-slate-200 dark:border-[#2E334B] shadow-2xl p-2 z-50 space-y-1 backdrop-blur-xl animate-fadeIn">
                 <div className="px-2.5 py-1.5 border-b border-slate-200 dark:border-[#262A3D] text-[10px] uppercase font-mono tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
-                  <span>Langues d’Apprentissage</span>
+                  <span>{t.chooseStudyLang || 'Langue pour Étudier'}</span>
                   <span className="text-slate-400 dark:text-slate-500 font-mono">4 langues</span>
                 </div>
 

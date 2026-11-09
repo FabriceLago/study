@@ -220,25 +220,25 @@ export const MayorProfileModal: React.FC<MayorProfileModalProps> = ({
         </div>
 
         {/* Reset & Footer */}
-        <div className="pt-4 border-t border-purple-500/20 flex justify-between items-center text-xs text-slate-400">
+        <div className="pt-4 border-t border-emerald-500/20 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-400">
           <button
             onClick={() => {
-              if (confirm('Voulez-vous vraiment réinitialiser tout l’archipel des cités ?')) {
+              if (confirm('Voulez-vous réinitialiser toutes les données à zéro (suppression des devoirs, briques et remise à l’état initial propre) ?')) {
                 onResetArchipelago();
                 onClose();
               }
             }}
-            className="flex items-center gap-1.5 text-rose-400 hover:text-rose-300"
+            className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-medium px-3 py-1.5 rounded-lg border border-emerald-500/30 hover:border-emerald-500/60 transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Réinitialiser l'Archipel</span>
+            <span>Remettre les données à zéro</span>
           </button>
 
           <button
             onClick={onClose}
-            className="px-5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 rounded-xl shadow-md"
+            className="px-5 py-2 text-xs font-semibold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-md transition-all active:scale-95"
           >
-            Fermer la Mairie
+            Fermer le Profil
           </button>
         </div>
       </div>

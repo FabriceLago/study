@@ -15,10 +15,14 @@ import { soundEngine } from '../utils/audio';
 import { speechHelper } from '../utils/speech';
 import { useLanguage } from '../utils/i18n';
 
+import { StudyLanguage } from '../types/game';
+
 interface VoiceChallengeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onEarnRewards: (bricks: number, xp: number) => void;
+  selectedStudyLanguage?: StudyLanguage;
+  onSelectStudyLanguage?: (lang: StudyLanguage) => void;
 }
 
 interface VoiceWord {
@@ -32,65 +36,226 @@ interface VoiceWord {
   tip: string;
 }
 
-const VOICE_WORDS: VoiceWord[] = [
-  {
-    id: 'vw_1',
-    word: 'Goedemorgen',
-    phonetic: '[xoo-duh-mor-xun]',
-    translation: 'Bonjour ! (le matin)',
-    language: 'Néerlandais',
-    flag: '🇳🇱',
-    voiceLang: 'nl-NL',
-    tip: 'Prononcez le « G » avec une douce expiration gutturale typique des Pays-Bas.',
-  },
-  {
-    id: 'vw_2',
-    word: 'Alsjeblieft',
-    phonetic: '[als-yuh-bleeft]',
-    translation: 'S’il vous plaît / Voici',
-    language: 'Néerlandais',
-    flag: '🇳🇱',
-    voiceLang: 'nl-NL',
-    tip: 'Un mot magique indispensable au quotidien à Amsterdam et Bruxelles.',
-  },
-  {
-    id: 'vw_3',
-    word: 'Dank je wel',
-    phonetic: '[dank yuh vel]',
-    translation: 'Merci beaucoup',
-    language: 'Néerlandais',
-    flag: '🇳🇱',
-    voiceLang: 'nl-NL',
-    tip: 'Le « w » se prononce doucement entre le v et le w français.',
-  },
-  {
-    id: 'vw_4',
-    word: 'Architecture',
-    phonetic: '[ahr-ki-tek-cher]',
-    translation: 'Architecture',
-    language: 'Anglais',
-    flag: '🇬🇧',
-    voiceLang: 'en-US',
-    tip: 'Appuyez bien sur la première syllabe « ARCH ».',
-  },
-  {
-    id: 'vw_5',
-    word: 'Maravilloso',
-    phonetic: '[mah-rah-vee-yoh-soh]',
-    translation: 'Merveilleux',
-    language: 'Espagnol',
-    flag: '🇪🇸',
-    voiceLang: 'es-ES',
-    tip: 'Faites rouler légèrement le « r » et chantez les voyelles ouvertes.',
-  },
-];
+const WORDS_BY_LANG: Record<StudyLanguage, VoiceWord[]> = {
+  nl: [
+    {
+      id: 'vw_nl_1',
+      word: 'Goedemorgen',
+      phonetic: '[xoo-duh-mor-xun]',
+      translation: 'Bonjour ! (le matin)',
+      language: 'Néerlandais',
+      flag: '🇳🇱',
+      voiceLang: 'nl-NL',
+      tip: 'Prononcez le « G » avec une douce expiration gutturale typique des Pays-Bas.',
+    },
+    {
+      id: 'vw_nl_2',
+      word: 'Alsjeblieft',
+      phonetic: '[als-yuh-bleeft]',
+      translation: 'S’il vous plaît / Voici',
+      language: 'Néerlandais',
+      flag: '🇳🇱',
+      voiceLang: 'nl-NL',
+      tip: 'Un mot magique indispensable au quotidien à Amsterdam et Bruxelles.',
+    },
+    {
+      id: 'vw_nl_3',
+      word: 'Dank je wel',
+      phonetic: '[dank yuh vel]',
+      translation: 'Merci beaucoup',
+      language: 'Néerlandais',
+      flag: '🇳🇱',
+      voiceLang: 'nl-NL',
+      tip: 'Le « w » se prononce doucement entre le v et le w français.',
+    },
+    {
+      id: 'vw_nl_4',
+      word: 'Tot ziens',
+      phonetic: '[tot zeens]',
+      translation: 'Au revoir / À bientôt',
+      language: 'Néerlandais',
+      flag: '🇳🇱',
+      voiceLang: 'nl-NL',
+      tip: 'La formule d’adieu courante et polie en néerlandais.',
+    },
+    {
+      id: 'vw_nl_5',
+      word: 'Prachtig',
+      phonetic: '[prakh-tikh]',
+      translation: 'Magnifique / Splendide',
+      language: 'Néerlandais',
+      flag: '🇳🇱',
+      voiceLang: 'nl-NL',
+      tip: 'Terme enthousiaste pour décrire une belle cité ou une réussite.',
+    },
+  ],
+  en: [
+    {
+      id: 'vw_en_1',
+      word: 'Architecture',
+      phonetic: '[ahr-ki-tek-cher]',
+      translation: 'Architecture',
+      language: 'Anglais',
+      flag: '🇬🇧',
+      voiceLang: 'en-US',
+      tip: 'Appuyez bien sur la première syllabe « ARCH ».',
+    },
+    {
+      id: 'vw_en_2',
+      word: 'Good morning',
+      phonetic: '[good mor-ning]',
+      translation: 'Bonjour (le matin)',
+      language: 'Anglais',
+      flag: '🇬🇧',
+      voiceLang: 'en-US',
+      tip: 'Prononcez distinctement le son « oo » court et le « ing » final.',
+    },
+    {
+      id: 'vw_en_3',
+      word: 'Thank you very much',
+      phonetic: '[thank yoo ve-ree much]',
+      translation: 'Merci beaucoup',
+      language: 'Anglais',
+      flag: '🇬🇧',
+      voiceLang: 'en-US',
+      tip: 'Placez la langue entre les incisives pour le son « TH » initial.',
+    },
+    {
+      id: 'vw_en_4',
+      word: 'Extraordinary',
+      phonetic: '[ik-strawr-dn-er-ee]',
+      translation: 'Extraordinaire',
+      language: 'Anglais',
+      flag: '🇬🇧',
+      voiceLang: 'en-US',
+      tip: 'Liez le mot en 4 syllabes fluides avec accent tonique sur « strawr ».',
+    },
+    {
+      id: 'vw_en_5',
+      word: 'Challenge',
+      phonetic: '[chal-inj]',
+      translation: 'Défi / Épreuve',
+      language: 'Anglais',
+      flag: '🇬🇧',
+      voiceLang: 'en-US',
+      tip: 'Le « ch » claque comme dans « tch » français.',
+    },
+  ],
+  es: [
+    {
+      id: 'vw_es_1',
+      word: 'Buenos días',
+      phonetic: '[bweh-nos dee-as]',
+      translation: 'Bonjour (le matin)',
+      language: 'Espagnol',
+      flag: '🇪🇸',
+      voiceLang: 'es-ES',
+      tip: 'Faites bien chanter la voyelle « í » accentuée dans días.',
+    },
+    {
+      id: 'vw_es_2',
+      word: 'Por favor',
+      phonetic: '[por fah-vor]',
+      translation: 'S’il vous plaît',
+      language: 'Espagnol',
+      flag: '🇪🇸',
+      voiceLang: 'es-ES',
+      tip: 'Le « r » final vibre doucement contre le palais.',
+    },
+    {
+      id: 'vw_es_3',
+      word: 'Muchas gracias',
+      phonetic: '[moo-chas grah-syas]',
+      translation: 'Merci beaucoup',
+      language: 'Espagnol',
+      flag: '🇪🇸',
+      voiceLang: 'es-ES',
+      tip: 'Prononcez le « u » pur comme « ou » en français.',
+    },
+    {
+      id: 'vw_es_4',
+      word: 'Maravilloso',
+      phonetic: '[mah-rah-vee-yoh-soh]',
+      translation: 'Merveilleux',
+      language: 'Espagnol',
+      flag: '🇪🇸',
+      voiceLang: 'es-ES',
+      tip: 'Le « ll » se prononce comme un « y » chantant.',
+    },
+    {
+      id: 'vw_es_5',
+      word: 'Hasta luego',
+      phonetic: '[ahs-tah lweh-goh]',
+      translation: 'À plus tard / Au revoir',
+      language: 'Espagnol',
+      flag: '🇪🇸',
+      voiceLang: 'es-ES',
+      tip: 'Le « H » est totalement muet en espagnol.',
+    },
+  ],
+  fr: [
+    {
+      id: 'vw_fr_1',
+      word: 'Bonjour',
+      phonetic: '[bon-zhoor]',
+      translation: 'Salutation quotidienne',
+      language: 'Français',
+      flag: '🇫🇷',
+      voiceLang: 'fr-FR',
+      tip: 'Articulez clairement le « on » nasal et le « jour » souple.',
+    },
+    {
+      id: 'vw_fr_2',
+      word: 'S’il vous plaît',
+      phonetic: '[seel voo pleh]',
+      translation: 'Formule de politesse',
+      language: 'Français',
+      flag: '🇫🇷',
+      voiceLang: 'fr-FR',
+      tip: 'La formule classique d’élégance verbale.',
+    },
+    {
+      id: 'vw_fr_3',
+      word: 'Bibliothèque',
+      phonetic: '[bee-blee-oh-tek]',
+      translation: 'Lieu de conservation des livres',
+      language: 'Français',
+      flag: '🇫🇷',
+      voiceLang: 'fr-FR',
+      tip: 'Détachez les syllabes bi-blio-thèque avec clarté.',
+    },
+    {
+      id: 'vw_fr_4',
+      word: 'Connaissance',
+      phonetic: '[koh-neh-sahns]',
+      translation: 'Savoir & Apprentissage',
+      language: 'Français',
+      flag: '🇫🇷',
+      voiceLang: 'fr-FR',
+      tip: 'Faites bien résonner le son « ance » en fin de mot.',
+    },
+    {
+      id: 'vw_fr_5',
+      word: 'Éloquence',
+      phonetic: '[eh-loh-kahns]',
+      translation: 'Art de bien s’exprimer',
+      language: 'Français',
+      flag: '🇫🇷',
+      voiceLang: 'fr-FR',
+      tip: 'L’accent aigu initial donne tout le dynamisme au mot.',
+    },
+  ],
+};
 
 export const VoiceChallengeModal: React.FC<VoiceChallengeModalProps> = ({
   isOpen,
   onClose,
   onEarnRewards,
+  selectedStudyLanguage = 'nl',
+  onSelectStudyLanguage,
 }) => {
   const { t } = useLanguage();
+  const [activeLang, setActiveLang] = useState<StudyLanguage>(selectedStudyLanguage);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isListening, setIsListening] = useState(false);
   const [accuracy, setAccuracy] = useState<number | null>(null);
@@ -100,7 +265,17 @@ export const VoiceChallengeModal: React.FC<VoiceChallengeModalProps> = ({
 
   const recognitionRef = useRef<any>(null);
 
-  const currentWord = VOICE_WORDS[currentIndex];
+  // Sync active language with prop if updated
+  useEffect(() => {
+    setActiveLang(selectedStudyLanguage);
+    setCurrentIndex(0);
+    setAccuracy(null);
+    setSpokenText('');
+    setIsCompleted(false);
+  }, [selectedStudyLanguage]);
+
+  const activeWordList = WORDS_BY_LANG[activeLang] || WORDS_BY_LANG.nl;
+  const currentWord = activeWordList[currentIndex % activeWordList.length];
 
   useEffect(() => {
     if (!isOpen) {
@@ -206,7 +381,7 @@ export const VoiceChallengeModal: React.FC<VoiceChallengeModalProps> = ({
 
   const handleNextWord = () => {
     soundEngine.playClick();
-    if (currentIndex < VOICE_WORDS.length - 1) {
+    if (currentIndex < activeWordList.length - 1) {
       setCurrentIndex((i) => i + 1);
       setAccuracy(null);
       setSpokenText('');
@@ -255,7 +430,45 @@ export const VoiceChallengeModal: React.FC<VoiceChallengeModalProps> = ({
         </div>
 
         {/* Content Body */}
-        <div className="p-5 sm:p-6 overflow-y-auto flex-1 bg-[#080912] space-y-6">
+        <div className="p-5 sm:p-6 overflow-y-auto flex-1 bg-[#080912] space-y-5">
+          {/* Study Language Selector Row */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 bg-[#101322] rounded-2xl border border-[#222538]">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-bold px-2">
+              Langue à pratiquer :
+            </span>
+            <div className="flex items-center gap-1.5 overflow-x-auto">
+              {[
+                { code: 'nl' as StudyLanguage, label: 'Néerlandais', flag: '🇳🇱' },
+                { code: 'en' as StudyLanguage, label: 'Anglais', flag: '🇬🇧' },
+                { code: 'es' as StudyLanguage, label: 'Espagnol', flag: '🇪🇸' },
+                { code: 'fr' as StudyLanguage, label: 'Français', flag: '🇫🇷' },
+              ].map((lang) => {
+                const isSelected = activeLang === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      soundEngine.playClick();
+                      setActiveLang(lang.code);
+                      onSelectStudyLanguage?.(lang.code);
+                      setCurrentIndex(0);
+                      setAccuracy(null);
+                      setSpokenText('');
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-emerald-500 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.4)] scale-102'
+                        : 'bg-[#161928] text-slate-400 hover:text-white hover:bg-[#1E2338]'
+                    }`}
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {!isCompleted ? (
             <div className="space-y-6 text-center">
               {/* Word Card */}
@@ -266,7 +479,7 @@ export const VoiceChallengeModal: React.FC<VoiceChallengeModalProps> = ({
                     <span>{currentWord.language}</span>
                   </span>
                   <span className="text-slate-400">
-                    Mot {currentIndex + 1} / {VOICE_WORDS.length}
+                    Mot {currentIndex + 1} / {activeWordList.length}
                   </span>
                 </div>
 
@@ -352,7 +565,7 @@ export const VoiceChallengeModal: React.FC<VoiceChallengeModalProps> = ({
                   onClick={handleNextWord}
                   className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-md transition-all active:scale-95 flex items-center gap-2"
                 >
-                  <span>{currentIndex < VOICE_WORDS.length - 1 ? 'Mot Suivant' : 'Terminer la Session'}</span>
+                  <span>{currentIndex < activeWordList.length - 1 ? 'Mot Suivant' : 'Terminer la Session'}</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -374,7 +587,7 @@ export const VoiceChallengeModal: React.FC<VoiceChallengeModalProps> = ({
               </div>
 
               <div className="p-4 rounded-xl bg-emerald-950/50 border border-emerald-500/40 text-xs font-mono text-emerald-300 max-w-xs mx-auto font-bold">
-                Total Récolté : +{VOICE_WORDS.length * 10} 🧱 · +{VOICE_WORDS.length * 40} XP
+                Total Récolté : +{activeWordList.length * 10} 🧱 · +{activeWordList.length * 40} XP
               </div>
 
               <div className="flex items-center justify-center gap-3">

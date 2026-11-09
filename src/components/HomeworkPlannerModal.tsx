@@ -20,53 +20,7 @@ interface HomeworkPlannerModalProps {
   onCompleteHomeworkBonus: (bricks: number) => void;
 }
 
-const DEFAULT_HOMEWORK: HomeworkItem[] = [
-  {
-    id: 'hw_1',
-    title: 'Apprendre par cœur les tables de 7 et 8',
-    subjectId: 'maths',
-    day: 'Lundi',
-    details: 'Bien réviser 7 × 8 = 56 !',
-    done: true,
-    rewardBricks: 20,
-  },
-  {
-    id: 'hw_2',
-    title: 'Copier la poésie « Chanson d’Automne »',
-    subjectId: 'francais',
-    day: 'Mardi',
-    details: 'Faire un joli dessin en marge',
-    done: false,
-    rewardBricks: 20,
-  },
-  {
-    id: 'hw_3',
-    title: 'Schéma de la germination du haricot',
-    subjectId: 'sciences',
-    day: 'Mercredi',
-    details: 'Indiquer la racine, la tige et les premières feuilles',
-    done: false,
-    rewardBricks: 20,
-  },
-  {
-    id: 'hw_4',
-    title: 'Frise chronologique de la Révolution',
-    subjectId: 'histoire',
-    day: 'Jeudi',
-    details: 'Retenir la date clé du 14 juillet 1789',
-    done: false,
-    rewardBricks: 20,
-  },
-  {
-    id: 'hw_5',
-    title: 'Vocabulaire des animaux en anglais',
-    subjectId: 'langues',
-    day: 'Vendredi',
-    details: 'Cat, dog, rabbit, bird, horse',
-    done: false,
-    rewardBricks: 20,
-  },
-];
+const DEFAULT_HOMEWORK: HomeworkItem[] = [];
 
 export const HomeworkPlannerModal: React.FC<HomeworkPlannerModalProps> = ({
   isOpen,
@@ -77,7 +31,12 @@ export const HomeworkPlannerModal: React.FC<HomeworkPlannerModalProps> = ({
   const [homeworkList, setHomeworkList] = useState<HomeworkItem[]>(() => {
     try {
       const saved = localStorage.getItem('studyquest_homework_list');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: HomeworkItem[] = JSON.parse(saved);
+        // Clean out any previously saved mock IDs (hw_1 through hw_5)
+        const cleaned = parsed.filter((item) => !item.id.startsWith('hw_'));
+        return cleaned;
+      }
     } catch {}
     return DEFAULT_HOMEWORK;
   });

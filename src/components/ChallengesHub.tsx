@@ -5,13 +5,15 @@ import {
   ArrowRight,
   BookOpen,
 } from 'lucide-react';
-import { ConstructionChallenge, SubjectCity, ArchipelagoStats, SubjectCityId } from '../types/game';
+import { ConstructionChallenge, SubjectCity, ArchipelagoStats, SubjectCityId, StudyLanguage } from '../types/game';
 import { soundEngine } from '../utils/audio';
 
 interface ChallengesHubProps {
   challenges: ConstructionChallenge[];
   cities: SubjectCity[];
   archipelago: ArchipelagoStats;
+  selectedStudyLanguage?: StudyLanguage;
+  onSelectStudyLanguage?: (lang: StudyLanguage) => void;
   onSelectChallenge: (challenge: ConstructionChallenge) => void;
   onOpenAiForge: () => void;
 }
@@ -20,32 +22,44 @@ export const ChallengesHub: React.FC<ChallengesHubProps> = ({
   challenges,
   cities,
   archipelago,
+  selectedStudyLanguage = 'nl',
+  onSelectStudyLanguage,
   onSelectChallenge,
   onOpenAiForge,
 }) => {
   const [selectedCityId, setSelectedCityId] = useState<SubjectCityId | 'all'>('all');
+  const [targetLangFilter, setTargetLangFilter] = useState<StudyLanguage | 'all'>(selectedStudyLanguage);
 
-  const filtered =
-    selectedCityId === 'all'
-      ? challenges
-      : challenges.filter((c) => c.cityId === selectedCityId);
+  const filtered = challenges.filter((c) => {
+    if (selectedCityId !== 'all' && c.cityId !== selectedCityId) {
+      return false;
+    }
+    if (targetLangFilter !== 'all') {
+      if (targetLangFilter === 'fr') {
+        // French challenges
+        return c.cityId === 'francais' || c.language === 'fr';
+      }
+      return c.language === targetLangFilter;
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-[#0B0E23] border border-slate-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white dark:bg-[#111422] border border-slate-200 dark:border-[#232838] shadow-xl">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-mono uppercase tracking-wider text-cyan-400">
-              Resq Incident Command · Résolution Active
+            <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-500 dark:text-emerald-400 font-bold">
+              Study Arena · Épreuves & Pratique des Langues
             </span>
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
-            Centre d'Interventions & Chantiers
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Centre des Épreuves & Chantiers
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl">
-            Chaque épreuve résout une anomalie pédagogique et active le déploiement d'un nouveau monument sur vos 6 cités.
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-2xl">
+            Choisissez la langue que vous souhaitez étudier aujourd'hui pour filtrer instantanément les exercices, le vocabulaire et les monuments correspondants.
           </p>
         </div>
 
@@ -54,27 +68,77 @@ export const ChallengesHub: React.FC<ChallengesHubProps> = ({
             soundEngine.playClick();
             onOpenAiForge();
           }}
-          className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#0A26E6] hover:bg-[#1F3BF5] rounded-xl shadow-[0_0_20px_rgba(10,38,230,0.35)] transition-all shrink-0 active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all shrink-0 active:scale-95"
         >
-          <Sparkles className="w-4 h-4 text-cyan-300" />
+          <Sparkles className="w-4 h-4 text-slate-950" />
           <span>Créer un Chantier Personnalisé</span>
         </button>
       </div>
 
-      {/* Subject City Filter Bar */}
+      {/* Target Study Language Selector Bar */}
+      <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-[#101915] border border-emerald-200 dark:border-emerald-500/30 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-mono uppercase tracking-wider text-emerald-800 dark:text-emerald-400 font-bold flex items-center gap-1.5">
+            <span>📚</span>
+            <span>Choisir la langue à étudier :</span>
+          </span>
+          <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400">
+            {filtered.length} défi{filtered.length > 1 ? 's' : ''} disponible{filtered.length > 1 ? 's' : ''}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          {[
+            { id: 'nl' as StudyLanguage, label: 'Néerlandais', flag: '🇳🇱', desc: 'Salutations & Vocabulaire' },
+            { id: 'en' as StudyLanguage, label: 'Anglais', flag: '🇬🇧', desc: 'Expressions & Idiomes' },
+            { id: 'es' as StudyLanguage, label: 'Espagnol', flag: '🇪🇸', desc: 'Politesse & Quotidien' },
+            { id: 'fr' as StudyLanguage, label: 'Français', flag: '🇫🇷', desc: 'Grammaire & Littérature' },
+            { id: 'all' as const, label: 'Toutes les matières', flag: '🌐', desc: 'Maths, Sciences, Histoire' },
+          ].map((item) => {
+            const isSelected = targetLangFilter === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  soundEngine.playClick();
+                  setTargetLangFilter(item.id);
+                  if (item.id !== 'all') {
+                    onSelectStudyLanguage?.(item.id);
+                  }
+                }}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 border ${
+                  isSelected
+                    ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.35)] scale-102'
+                    : 'bg-white dark:bg-[#161824] border-slate-200 dark:border-[#262A3D] text-slate-700 dark:text-slate-300 hover:border-emerald-500/50'
+                }`}
+              >
+                <span className="text-base">{item.flag}</span>
+                <div className="text-left leading-tight">
+                  <div>{item.label}</div>
+                  <div className={`text-[10px] font-normal ${isSelected ? 'text-slate-900 font-medium' : 'text-slate-400'}`}>
+                    {item.desc}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Secondary Subject Filter Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => {
             soundEngine.playClick();
             setSelectedCityId('all');
           }}
-          className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl whitespace-nowrap transition-all border ${
+          className={`px-3 py-1.5 text-xs font-semibold rounded-xl whitespace-nowrap transition-all border ${
             selectedCityId === 'all'
-              ? 'bg-[#0A26E6] border-[#0A26E6] text-white shadow-sm'
-              : 'bg-[#0B0E23] border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+              ? 'bg-emerald-500 text-slate-950 font-bold border-emerald-400 shadow-sm'
+              : 'bg-white dark:bg-[#161824] border-slate-200 dark:border-[#262A3D] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          Toutes les Cités ({challenges.length})
+          Tous les Chantiers ({challenges.length})
         </button>
 
         {cities.map((c) => (
@@ -84,10 +148,10 @@ export const ChallengesHub: React.FC<ChallengesHubProps> = ({
               soundEngine.playClick();
               setSelectedCityId(c.id);
             }}
-            className={`px-3.5 py-1.5 text-xs font-semibold rounded-xl whitespace-nowrap transition-all flex items-center gap-2 border ${
+            className={`px-3 py-1.5 text-xs font-semibold rounded-xl whitespace-nowrap transition-all flex items-center gap-2 border ${
               selectedCityId === c.id
-                ? 'bg-[#0A26E6] border-[#0A26E6] text-white shadow-sm'
-                : 'bg-[#0B0E23] border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                ? 'bg-emerald-500 text-slate-950 font-bold border-emerald-400 shadow-sm'
+                : 'bg-white dark:bg-[#161824] border-slate-200 dark:border-[#262A3D] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <span>{c.name}</span>

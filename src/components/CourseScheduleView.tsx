@@ -18,6 +18,9 @@ interface CourseScheduleViewProps {
   flashcards: Flashcard[];
   cities: SubjectCity[];
   completedChallengeIds?: string[];
+  streakDays?: number;
+  selectedStudyLanguage?: StudyLanguage;
+  onSelectStudyLanguage?: (lang: StudyLanguage) => void;
   onStartStudy: (cityId: SubjectCityId) => void;
   onOpenPrint?: () => void;
 }
@@ -26,6 +29,9 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
   flashcards,
   cities,
   completedChallengeIds = [],
+  streakDays = 0,
+  selectedStudyLanguage = 'nl',
+  onSelectStudyLanguage,
   onStartStudy,
   onOpenPrint,
 }) => {
@@ -53,7 +59,13 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
   const [selectedDay, setSelectedDay] = useState<string>(scheduleDays[0]?.id || 'day_0');
   const [activeFlashcard, setActiveFlashcard] = useState<Flashcard | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [selectedLangFilter, setSelectedLangFilter] = useState<StudyLanguage | 'all'>('all');
+  const [selectedLangFilter, setSelectedLangFilter] = useState<StudyLanguage | 'all'>(selectedStudyLanguage);
+
+  React.useEffect(() => {
+    if (selectedStudyLanguage) {
+      setSelectedLangFilter(selectedStudyLanguage);
+    }
+  }, [selectedStudyLanguage]);
 
   const plannedTasks = [
     {
@@ -127,9 +139,9 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-slate-950/80 px-3.5 py-1.5 rounded-full border border-orange-200 dark:border-orange-500/30 shadow-sm">
-          <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
-          <span>Série d’études : 1 jour actif</span>
+        <div className="flex items-center gap-2 text-xs font-mono text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-slate-950/80 px-3.5 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/30 shadow-sm">
+          <Flame className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
+          <span>Série d’études : {streakDays > 0 ? `${streakDays} jour${streakDays > 1 ? 's' : ''} actif${streakDays > 1 ? 's' : ''}` : '0 jour actif (prêt à démarrer)'}</span>
         </div>
       </div>
 
@@ -269,7 +281,10 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
               Toutes
             </button>
             <button
-              onClick={() => setSelectedLangFilter('nl')}
+              onClick={() => {
+                setSelectedLangFilter('nl');
+                onSelectStudyLanguage?.('nl');
+              }}
               className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 ${
                 selectedLangFilter === 'nl'
                   ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
@@ -280,7 +295,10 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
               <span>Néerlandais</span>
             </button>
             <button
-              onClick={() => setSelectedLangFilter('en')}
+              onClick={() => {
+                setSelectedLangFilter('en');
+                onSelectStudyLanguage?.('en');
+              }}
               className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 ${
                 selectedLangFilter === 'en'
                   ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
@@ -291,7 +309,10 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
               <span>Anglais</span>
             </button>
             <button
-              onClick={() => setSelectedLangFilter('es')}
+              onClick={() => {
+                setSelectedLangFilter('es');
+                onSelectStudyLanguage?.('es');
+              }}
               className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 ${
                 selectedLangFilter === 'es'
                   ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
@@ -300,6 +321,20 @@ export const CourseScheduleView: React.FC<CourseScheduleViewProps> = ({
             >
               <span>🇪🇸</span>
               <span>Espagnol</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedLangFilter('fr');
+                onSelectStudyLanguage?.('fr');
+              }}
+              className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all flex items-center gap-1 ${
+                selectedLangFilter === 'fr'
+                  ? 'bg-emerald-500 text-slate-950 font-bold shadow-sm'
+                  : 'bg-white dark:bg-[#161824] border border-slate-200 dark:border-[#282C40] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>🇫🇷</span>
+              <span>Français</span>
             </button>
           </div>
 
